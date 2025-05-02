@@ -255,7 +255,7 @@ public struct HealthKitScaleModel {
     public var isFinalResult: Bool? = nil
     
     // BMI = weight (kg) / (height (m)* height(m))
-    func toBMI(height: Int, weight: Double) -> Double {
+    public func toBMI(height: Int, weight: Double) -> Double {
         if height == 0 {
             return 0
         }
@@ -267,7 +267,7 @@ public struct HealthKitScaleModel {
     
     // (1.39 x BMI) + (0.16 x age) – (10.34 x gender) – 9 = Body Fat Percentage
     // (In this case, “gender” is equal to 1 for men and 0 for women.
-    func toBodyFat(height: Int, age: Int,gender tempGender: String) -> Double {
+    public func toBodyFat(height: Int, age: Int,gender tempGender: String) -> Double {
         if height == 0 {
             return 0
         }
@@ -284,7 +284,7 @@ public struct HealthKitScaleModel {
         return bodyfat
     }
     
-    func healthStatus(height: Int) -> String {
+    public func healthStatus(height: Int) -> String {
         switch toBMI(height: height, weight: weight ?? 0) {
         case 0..<18.5:
             "Underweight"
@@ -472,27 +472,62 @@ public struct SphygmometerModel: Decodable {
     public let pulse: Int
     public let datetime: String
     public let user: String
+
+    public init(diastolic: Int, systolic: Int, pulse: Int, datetime: String, user: String) {
+        self.diastolic = diastolic
+        self.systolic = systolic
+        self.pulse = pulse
+        self.datetime = datetime
+        self.user = user
+    }
 }
+
 public struct ScaleModel: Decodable {
     public let weight: Double
     public let bodyfat: Double
     public let bmi: Double
     public let datetime: String
     public let user: String
+
+    public init(weight: Double, bodyfat: Double, bmi: Double, datetime: String, user: String) {
+        self.weight = weight
+        self.bodyfat = bodyfat
+        self.bmi = bmi
+        self.datetime = datetime
+        self.user = user
+    }
 }
+
 public struct OximeterModel: Decodable {
     public let spo2: Int
     public let bpm: Int
     public let pi: Double
     public let datetime: String
     public let user: String
+
+    public init(spo2: Int, bpm: Int, pi: Double, datetime: String, user: String) {
+        self.spo2 = spo2
+        self.bpm = bpm
+        self.pi = pi
+        self.datetime = datetime
+        self.user = user
+    }
 }
+
 
 public struct ThermometerModel: Decodable {
     public let temperature: Double
     public let mode: String
     public let datetime: String
     public let user: String
+    
+    // 显式添加构造器
+    public init(temperature: Double, mode: String, datetime: String, user: String) {
+        self.temperature = temperature
+        self.mode = mode
+        self.datetime = datetime
+        self.user = user
+    }
     
     @MainActor static let error = ThermometerModel(temperature: -1, mode: "Error", datetime: "", user: "Error")
 }
@@ -503,6 +538,14 @@ public struct RopeModel: Decodable {
     public let completiontime: Int
     public let mode: String
     public let user: String
+
+    public init(count: Int, datetime: String, completiontime: Int, mode: String, user: String) {
+        self.count = count
+        self.datetime = datetime
+        self.completiontime = completiontime
+        self.mode = mode
+        self.user = user
+    }
 }
 
 public struct HeartRateModel: Decodable {
@@ -511,13 +554,28 @@ public struct HeartRateModel: Decodable {
     public let maxhr: Int
     public let datetime: String
     public let user: String
+
+    public init(averagehr: Double, minhr: Int, maxhr: Int, datetime: String, user: String) {
+        self.averagehr = averagehr
+        self.minhr = minhr
+        self.maxhr = maxhr
+        self.datetime = datetime
+        self.user = user
+    }
 }
 
 public struct RequestModel<T: Decodable>: Decodable {
     public let code: Int
     public let message: String
     public let data: T
+
+    public init(code: Int, message: String, data: T) {
+        self.code = code
+        self.message = message
+        self.data = data
+    }
 }
+
 
 //public struct SportKitHomeDataModel: Decodable {
 //    public let lastScaleData: LastEntryModel?

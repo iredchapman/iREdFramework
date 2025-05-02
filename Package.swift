@@ -4,18 +4,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftPackageTest",
+    name: "iREdFramework",
     platforms: [.iOS(.v16)],
     products: [
         .library(
-            name: "SwiftPackageTest",
-            targets: ["SwiftPackageTest"]
+            name: "iREdFramework",
+            targets: ["iREdFramework"]
         ),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "SwiftPackageTest",
+            name: "iREdFramework",
             dependencies: ["HealthKitFramework", "SportKitFramework"],  // 添加 SportKitFramework 作为依赖项
             path: "Sources",
             swiftSettings: [
