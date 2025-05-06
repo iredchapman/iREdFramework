@@ -197,6 +197,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         iredDeviceData.scaleData.state.isMeasuring = false
         iredDeviceData.scaleData.state.isMeasurementCompleted = false
         centralManager.stopScan()
+        debugPrint("stop pairing")
     }
     
     // Connecting device
@@ -374,7 +375,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                         stopPairing()
                     } else {
                         if lastPairedScale != nil {
-                            iredDeviceData.oximeterData.state.isConnected = true
+                            // iredDeviceData.oximeterData.state.isConnected = true
+                            iredDeviceData.scaleData.state.isConnected = true
                             connectingLoadingAlert?.dismiss(animated: true, completion: {
                                 self.connectingLoadingAlert = nil
                             })
