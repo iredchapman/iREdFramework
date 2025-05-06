@@ -907,10 +907,8 @@ extension iREdBluetooth: @preconcurrency BloodPressureMonitorServiceDelegate {
 // MARK: JumpRope
 extension iREdBluetooth: @preconcurrency JumpRopeServiceDelegate {
     @MainActor public func jumpRopeStatusCallback(mode: Int, status: Int, setting: Int, count: Int, time: Int, screen: Int, battery: Int) {
-        if iredDeviceData.jumpRopeData.state.isMeasuring {
-            iredDeviceData.jumpRopeData.data.count = count
-            iredDeviceData.jumpRopeData.data.time = time
-        }
+        iredDeviceData.jumpRopeData.data.count = count
+        iredDeviceData.jumpRopeData.data.time = time
         iredDeviceData.jumpRopeData.data.mode = mode
         iredDeviceData.jumpRopeData.data.status = status
         iredDeviceData.jumpRopeData.data.setting = setting
