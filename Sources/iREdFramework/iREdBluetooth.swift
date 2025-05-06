@@ -408,6 +408,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.thermometerData.state.isPaired = true
                 lastPairedThermometer = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
                 stopPairing()
+                break
             case .oximeter:
                 let (uuidString, deviceName, macAddress) = oximeterService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
                 if uuidString.isEmpty { return }
@@ -415,6 +416,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.oximeterData.state.isPaired = true
                 lastPairedOximeter = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
                 stopPairing()
+                break
             case .sphygmometer:
                 let (uuidString, deviceName, macAddress) = sphygmometerService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
                 if uuidString.isEmpty { return }
@@ -422,6 +424,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.sphygmometerData.state.isPaired = true
                 lastPairedSphygmometer = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
                 stopPairing()
+                break
             case .scale:
                 //                guard let data = advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data else { return }
                 //                guard let macAddress = extractMacAddress(from: data, offset: 2) else { return }
@@ -431,6 +434,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.scaleData.state.isPaired = true
                 iredDeviceData.scaleData.data.peripheralName = name
                 lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
+                break
                 // SportKit
             case .jumpRope:
                 let (uuidString, deviceName, macAddress) = jumpRopeService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
@@ -446,6 +450,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                     self.stopPairing()
                 }
                 self.isJumpRopeMacAddressHandled = true
+                break
             case .heartRateBelt:
                 let (uuidString, deviceName, macAddress) = heartrateProfile.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
                 if uuidString.isEmpty { return }
@@ -454,6 +459,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.heartRateData.data.peripheralName = name
                 lastPairedHeartRate = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
                 stopPairing()
+                break
             default:
                 /// print("others")
                 break
