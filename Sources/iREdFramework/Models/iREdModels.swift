@@ -446,8 +446,8 @@ public struct HeartRateBeltModel: Equatable {
     @MainActor static let empty = HeartRateBeltModel()
 }
 public struct HeartRateBeltArrayModel: Equatable {
-    var date: Date = Date()
-    var heartrate: Int
+    public var date: Date = Date()
+    public var heartrate: Int
     
     public init(date: Date = Date(), heartrate: Int) {
         self.date = date
