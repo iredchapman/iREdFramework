@@ -117,23 +117,23 @@ public struct BodyInfo {
 
 // MARK: Data
 /*
-public enum DeviceStatus: String, Equatable {
-    case none = "None"
-    case measuring = "Measuring"
-    case measurementCompleted = "Measurement completed"
-    case pauseMeasurement = "Pause measurement"
-    case measurementError = "Measurement error"
-}
-
-public enum BluetoothStatus: String, Equatable {
-    case unpaired = "Unpaired"
-    case pairing = "Pairing"
-    case paired = "Paired"
-    case connecting = "Connecting"
-    case connected = "Connected"
-    case connectionFailure = "Connection Failure"
-    case disconnected = "Disconnected"
-}
+ public enum DeviceStatus: String, Equatable {
+ case none = "None"
+ case measuring = "Measuring"
+ case measurementCompleted = "Measurement completed"
+ case pauseMeasurement = "Pause measurement"
+ case measurementError = "Measurement error"
+ }
+ 
+ public enum BluetoothStatus: String, Equatable {
+ case unpaired = "Unpaired"
+ case pairing = "Pairing"
+ case paired = "Paired"
+ case connecting = "Connecting"
+ case connected = "Connected"
+ case connectionFailure = "Connection Failure"
+ case disconnected = "Disconnected"
+ }
  */
 
 public struct DeviceStatusModel: Equatable {
@@ -153,6 +153,11 @@ public struct DeviceStatusModel: Equatable {
 public struct MeasurementError: Equatable {
     let errorCode: Int
     let errorDescription: String
+    
+    public init(errorCode: Int, errorDescription: String) {
+        self.errorCode = errorCode
+        self.errorDescription = errorDescription
+    }
 }
 
 public protocol HealthDeviceModel {
@@ -261,7 +266,7 @@ public struct HealthKitScaleModel {
         }
         let heightInMeters = Double(height) / 100.0  // 先转换为 Double
         let bmi = weight / pow(heightInMeters, 2)
-//        print("weight: \(weight) height: \(height) 计算BMI分母：\(pow(heightInMeters, 2))")
+        //        print("weight: \(weight) height: \(height) 计算BMI分母：\(pow(heightInMeters, 2))")
         return bmi
     }
     
@@ -379,6 +384,11 @@ public struct JumpRopeArrayModel: Identifiable, Equatable {
     public let id = UUID()
     public let date: Date
     public let count: Int
+    
+    public init(date: Date, count: Int) {
+        self.date = date
+        self.count = count
+    }
 }
 
 public struct JumpRopeData: Equatable {
@@ -398,25 +408,25 @@ public struct HeartRateBeltModel: Equatable {
     public var batteryPercentage: Int? = nil
     /// 心率变化历史记录（每秒记录一次）
     public var heartrateArray: [HeartRateBeltArrayModel] = []
-
+    
     /// 获取记录期间所有心率值的总和
     /// - Returns: 心率值累加总和（用于计算平均心率等）
     public func totalHeartrate() -> Int {
         return heartrateArray.reduce(0) { $0 + $1.heartrate }
     }
-
+    
     /// 获取记录期间的最高心率值
     /// - Returns: 最高心率，若无记录则返回 nil
     public func maxHeartRate() -> Int? {
         return heartrateArray.max { $0.heartrate < $1.heartrate }?.heartrate
     }
-
+    
     /// 获取记录期间的最低心率值
     /// - Returns: 最低心率，若无记录则返回 nil
     public func minHeartRate() -> Int? {
         return heartrateArray.min { $0.heartrate < $1.heartrate }?.heartrate
     }
-
+    
     /// 获取已记录的总秒数
     /// - Returns: 心率数组的长度，即代表已记录的秒数
     public func recordedSeconds() -> Int {
@@ -431,13 +441,18 @@ public struct HeartRateBeltModel: Equatable {
         let avg = Double(total) / Double(heartrateArray.count)
         return (avg * 100).rounded() / 100
     }
-
+    
     /// 空模型初始化（默认值）
     @MainActor static let empty = HeartRateBeltModel()
 }
 public struct HeartRateBeltArrayModel: Equatable {
     var date: Date = Date()
     var heartrate: Int
+    
+    public init(date: Date = Date(), heartrate: Int) {
+        self.date = date
+        self.heartrate = heartrate
+    }
 }
 public struct HeartRateBeltData: Equatable {
     public var state: DeviceStatusModel = DeviceStatusModel()
@@ -472,7 +487,7 @@ public struct SphygmometerModel: Decodable {
     public let pulse: Int
     public let datetime: String
     public let user: String
-
+    
     public init(diastolic: Int, systolic: Int, pulse: Int, datetime: String, user: String) {
         self.diastolic = diastolic
         self.systolic = systolic
@@ -488,7 +503,7 @@ public struct ScaleModel: Decodable {
     public let bmi: Double
     public let datetime: String
     public let user: String
-
+    
     public init(weight: Double, bodyfat: Double, bmi: Double, datetime: String, user: String) {
         self.weight = weight
         self.bodyfat = bodyfat
@@ -504,7 +519,7 @@ public struct OximeterModel: Decodable {
     public let pi: Double
     public let datetime: String
     public let user: String
-
+    
     public init(spo2: Int, bpm: Int, pi: Double, datetime: String, user: String) {
         self.spo2 = spo2
         self.bpm = bpm
@@ -538,7 +553,7 @@ public struct RopeModel: Decodable {
     public let completiontime: Int
     public let mode: String
     public let user: String
-
+    
     public init(count: Int, datetime: String, completiontime: Int, mode: String, user: String) {
         self.count = count
         self.datetime = datetime
@@ -554,7 +569,7 @@ public struct HeartRateModel: Decodable {
     public let maxhr: Int
     public let datetime: String
     public let user: String
-
+    
     public init(averagehr: Double, minhr: Int, maxhr: Int, datetime: String, user: String) {
         self.averagehr = averagehr
         self.minhr = minhr
@@ -568,7 +583,7 @@ public struct RequestModel<T: Decodable>: Decodable {
     public let code: Int
     public let message: String
     public let data: T
-
+    
     public init(code: Int, message: String, data: T) {
         self.code = code
         self.message = message
@@ -583,8 +598,8 @@ public struct RequestModel<T: Decodable>: Decodable {
 //    public let lastFiveHeartRateData: [LastFiveHeartRateDataModel]?
 //    public let jumpRopeBestResult: [JumpRopeBestResultDataModel]?
 //    public let allHeartRateData: [AllHeartRateDataModel]?
-//    
-//    
+//
+//
 //    public struct LastEntryModel: Decodable {
 //        public let user: String?
 //        public let weight: Double?
@@ -592,7 +607,7 @@ public struct RequestModel<T: Decodable>: Decodable {
 //        public let bodyFat: Double?
 //        public let datetime: String?
 //    }
-//    
+//
 //    public struct LastWeekHeartRateDataModel: Decodable {
 //        public let datetime: String?
 //        public let averageHR: Double?
@@ -600,7 +615,7 @@ public struct RequestModel<T: Decodable>: Decodable {
 //        public let minHR: Int?
 //        public let user: String?
 //    }
-//    
+//
 //    public struct LastFiveHeartRateDataModel: Decodable {
 //        public let datetime: String?
 //        public let averageHR: Double?
@@ -608,7 +623,7 @@ public struct RequestModel<T: Decodable>: Decodable {
 //        public let minHR: Int?
 //        public let user: String?
 //    }
-//    
+//
 //    public struct JumpRopeBestResultDataModel: Decodable {
 //        public let mode: String?
 //        public let datetime: String?
@@ -617,7 +632,7 @@ public struct RequestModel<T: Decodable>: Decodable {
 //        public let efficiency: String?
 //        public let user: String?
 //    }
-//    
+//
 //    public struct AllHeartRateDataModel: Decodable {
 //        public let datetime: String?
 //        public let averageHR: Double?
