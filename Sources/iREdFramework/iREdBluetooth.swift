@@ -744,13 +744,19 @@ extension iREdBluetooth: @preconcurrency SportKitFramework.ScaleServiceDelegate 
 extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
     public func thermometerTemperatureCallback(temperature: Double, mode: Int, modeString: String) {
         hkDelegate?.thermometerCallback(callback: .temperature(temperature: temperature, mode: mode, modeString: modeString))
-        iredDeviceData.thermometerData.state.isConnected = true
-        iredDeviceData.thermometerData.state.isMeasurementCompleted = true
+        var thermometerData = iredDeviceData.thermometerData
+        thermometerData.state.isConnected = true
+        thermometerData.state.isMeasurementCompleted = true
+        let data = HealthKitThermometerModel(battery: iredDeviceData.thermometerData.data.battery, temperature: temperature, modeCode: mode, modeDescription: modeString)
+        thermometerData.data = data
+        Task {
+            await MainActor.run {
+                self.iredDeviceData.thermometerData = thermometerData
+            }
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.iredDeviceData.thermometerData.state.isMeasurementCompleted = false
         }
-        let data = HealthKitThermometerModel(battery: iredDeviceData.thermometerData.data.battery, temperature: temperature, modeCode: mode, modeDescription: modeString)
-        iredDeviceData.thermometerData.data = data
     }
     
     public func thermometerErrorCallback(error: Int, description: String) {
