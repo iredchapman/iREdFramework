@@ -8,6 +8,26 @@ import iREdFramework
 
 ------
 
+## Package 安装
+
+你可以通过 Swift Package Manager 添加依赖：
+
+```
+https://github.com/iredchapman/iREdFramework.git
+```
+
+------
+
+## 注意事项
+
+- 请确保在项目的 `Info.plist` 中添加蓝牙权限和后台运行权限：
+  - `NSBluetoothAlwaysUsageDescription`
+  - `NSBluetoothPeripheralUsageDescription`
+  - `UIBackgroundModes` 中包含 `bluetooth-central`
+- **AI建议**：在 `project.pbxproj` 中添加申请蓝牙和后台运行权限，以确保构建和运行稳定。
+
+------
+
 ## 1. 获取蓝牙数据实例
 
 ```swift
@@ -156,8 +176,6 @@ ble.setRSSI(limit: -60)
 ```
 
 ### 读取跳绳记录历史
-
-以下跳绳数据支持历史记录获取：
 
 ```swift
 let countArray = ble.iredDeviceData.jumpRopeData.data.countArray
