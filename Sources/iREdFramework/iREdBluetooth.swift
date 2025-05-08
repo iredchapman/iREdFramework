@@ -67,17 +67,6 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     
     @Published private var setRSSI: Int = -60
     
-    // Make sure to call back only once or less, and restore the initial state after two seconds
-    private var isJumpRopeMacAddressHandled = false {
-        didSet {
-            if isJumpRopeMacAddressHandled  {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self.isJumpRopeMacAddressHandled = false
-                }
-            }
-        }
-    }
-    
     public override init() {
         super.init()
         
@@ -429,6 +418,7 @@ extension iREdBluetooth: @preconcurrency CBCentralManagerDelegate {
     }
     
     private func addDevice(_ device: iRedDevice) {
+        debugPrint("添加设备", device.name)
         devices.appendUnique(device)
     }
 }
@@ -509,15 +499,14 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             debugPrint("跳绳-", "配对的UUID: ", uuid, "iREdFramework返回的uuid: ", uuidString)
             iredDeviceData.jumpRopeData.state.isPairing = false
             iredDeviceData.jumpRopeData.state.isPaired = true
-            if !self.isJumpRopeMacAddressHandled {
-                let dev = iRedDevice(deviceType: deviceType, name: deviceName, peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: macAddress)
-                self.iredDeviceData.jumpRopeData.data.peripheralName = name
-                self.iredDeviceData.jumpRopeData.data.macAddress = macAddress
-                self.bleDelegate?.bleDeviceCallback(callback: .discovered(deviceType: deviceType, device: dev))
-                self.lastPairedJumpRope = PairedDeviceModel(uuidString: uuid, name: peripheral.name, macAddress: macAddress)
-                self.stopPairing()
-            }
-            self.isJumpRopeMacAddressHandled = true
+            let dev = iRedDevice(deviceType: deviceType, name: deviceName, peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: macAddress)
+            var jumpRopeData = self.iredDeviceData.jumpRopeData.data
+            jumpRopeData.peripheralName = name
+            jumpRopeData.macAddress = macAddress
+            self.iredDeviceData.jumpRopeData.data = jumpRopeData
+            self.lastPairedJumpRope = PairedDeviceModel(uuidString: uuid, name: peripheral.name, macAddress: macAddress)
+            self.bleDelegate?.bleDeviceCallback(callback: .discovered(deviceType: deviceType, device: dev))
+            self.stopPairing()
         case .heartRateBelt:
             let (uuidString, deviceName, macAddress) = heartrateProfile.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
             if uuidString.isEmpty { return }
