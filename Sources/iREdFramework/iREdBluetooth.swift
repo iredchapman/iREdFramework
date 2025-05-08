@@ -513,7 +513,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         case .jumpRope:
             let (uuidString, deviceName, macAddress) = jumpRopeService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
             if uuidString.isEmpty { return }
-            debugPrint("跳绳-", "配对的UUID: ", uuid, "iREdFramework返回的uuid: ", uuidString)
             iredDeviceData.jumpRopeData.state.isPairing = false
             iredDeviceData.jumpRopeData.state.isPaired = true
             let dev = iRedDevice(deviceType: deviceType, name: deviceName, peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: macAddress)
@@ -815,16 +814,20 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
 // MARK: Scale
 extension iREdBluetooth: @preconcurrency SportKitFramework.ScaleServiceDelegate {
     public func scaleWeightCallback(weight: Double, isFinalResult: Bool) {
+        var scaleState = iredDeviceData.scaleData.state
+        if isFinalResult {
+            scaleState.isMeasurementCompleted = true
+            scaleState.isMeasuring = false
+        } else {
+            scaleState.isMeasuring = true
+            scaleState.isMeasurementCompleted = false
+        }
+        DispatchQueue.main.async {
+            self.iredDeviceData.scaleData.data.weight = weight
+            self.iredDeviceData.scaleData.state = scaleState
+        }
         hkDelegate?.scaleCallback(callback: .weight(weight: weight, isFinalResult: isFinalResult))
         skDelegate?.scaleCallback(callback: .weight(weight: weight, isFinalResult: isFinalResult))
-        iredDeviceData.scaleData.data.weight = weight
-        if isFinalResult {
-            iredDeviceData.scaleData.state.isMeasurementCompleted = true
-            iredDeviceData.scaleData.state.isMeasuring = false
-        } else {
-            iredDeviceData.scaleData.state.isMeasuring = true
-            iredDeviceData.scaleData.state.isMeasurementCompleted = false
-        }
     }
 }
 
