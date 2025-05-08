@@ -434,7 +434,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         
         if let currentUUIDString, uuid == currentUUIDString {
             debugPrint("连接持久化存储的设备: ", uuid, "peripheral name: ", peripheral.name ?? "NO Name")
-            peripheral.delegate = self // ✅ 确保 delegate 设置
+            // peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
             centralManager.connect(peripheral, options: nil)
             self.currentUUIDString = nil
