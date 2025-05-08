@@ -434,10 +434,9 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         guard let name = peripheral.name else { return } // The name is required for the ired Bluetooth device
         let deviceType: iREdBluetoothDeviceType = deviceTypeByPeripheralName(name)
         if currentDeviceType != deviceType && currentDeviceType != .all_ired_devices { return } // Pair only the current device type to avoid filtering all devices
-        let macAddress: String? = nil
         let uuid = peripheral.identifier.uuidString
         
-        if let currentUUIDString, peripheral.identifier.uuidString == currentUUIDString {
+        if let currentUUIDString, uuid == currentUUIDString, currentDeviceType == deviceType {
             peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
             centralManager.connect(peripheral, options: nil)
@@ -454,12 +453,13 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 }
             }
             addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
+            self.currentUUIDString = "" // 清空
             return
         }
         
         if RSSI.intValue < setRSSI { return } // Filter devices that are far away
         
-        let device = iRedDevice(deviceType: deviceType, name: peripheral.name ?? "Unknown equipment", peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: macAddress)
+        let device = iRedDevice(deviceType: deviceType, name: peripheral.name ?? "Unknown equipment", peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: nil)
         
         // In order to adapt the jump rope device to obtain the mac address, process the delegate callback separately
         if deviceType != .jumpRope {
