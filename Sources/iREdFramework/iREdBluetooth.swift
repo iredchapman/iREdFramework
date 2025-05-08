@@ -432,12 +432,18 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         if currentDeviceType != deviceType && currentDeviceType != .all_ired_devices { return } // Pair only the current device type to avoid filtering all devices
         let uuid = peripheral.identifier.uuidString
         
+        let device = iRedDevice(deviceType: deviceType, name: peripheral.name ?? "Unknown equipment", peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: nil)
+        
+        if devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).count == 0 {
+            addDevice(device)
+        }
+        
         if let currentUUIDString, uuid == currentUUIDString {
             debugPrint("连接持久化存储的设备: ", uuid, "peripheral name: ", peripheral.name ?? "NO Name")
             // peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
-            guard let currentPeripheral else { return }
-            centralManager.connect(self.currentPeripheral!, options: nil)
+            guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+            centralManager.connect(per, options: nil)
             self.currentUUIDString = nil
             if deviceType == .scale && lastPairedScale != nil {
                 iredDeviceData.oximeterData.state.isConnected = true
@@ -453,8 +459,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         }
         
         if RSSI.intValue < setRSSI { return } // Filter devices that are far away
-        
-        let device = iRedDevice(deviceType: deviceType, name: peripheral.name ?? "Unknown equipment", peripheral: peripheral, rssi: RSSI, isConnected: false, macAddress: nil)
         
         // In order to adapt the jump rope device to obtain the mac address, process the delegate callback separately
         /*
@@ -522,10 +526,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         }
         startPairingningAlert?.dismiss(animated: true, completion: nil)
         
-        // First pairing
-        if devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).count == 0 {
-            addDevice(device)
-        }
     }
     
     // MARK: Connect devices
