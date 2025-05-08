@@ -161,7 +161,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     }
     
     // Connecting device
-    public func connect(to device: iRedDevice) {
+    private func connect(to device: iRedDevice) {
         switch device.deviceType {
         case .thermometer:
             if !iredDeviceData.thermometerData.state.isConnected {
@@ -235,9 +235,9 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         default:
             break
         }
-        if let i = devices.firstIndex(where: { $0.deviceType == deviceType }) {
-            connect(to: devices[i])
-        }
+//        if let i = devices.firstIndex(where: { $0.deviceType == deviceType }) {
+//            connect(to: devices[i])
+//        }
     }
     
     @MainActor public func connect(byUUIDString uuid: String) {
@@ -293,13 +293,32 @@ extension iREdBluetooth {
         self.lastPairedHeartRate = loadDevice(.heartRate)
         self.lastPairedScale = loadDevice(.scale)
 
-        // 设置 UI 显示状态或内部逻辑标志
+        // 设置是否已配对
         iredDeviceData.jumpRopeData.state.isPaired = lastPairedJumpRope != nil
         iredDeviceData.heartRateData.state.isPaired = lastPairedHeartRate != nil
         iredDeviceData.thermometerData.state.isPaired = lastPairedThermometer != nil
         iredDeviceData.oximeterData.state.isPaired = lastPairedOximeter != nil
         iredDeviceData.sphygmometerData.state.isPaired = lastPairedSphygmometer != nil
         iredDeviceData.scaleData.state.isPaired = lastPairedScale != nil
+
+        // 设置 macAddress 和 peripheralName
+        iredDeviceData.jumpRopeData.data.macAddress = lastPairedJumpRope?.macAddress
+        iredDeviceData.jumpRopeData.data.peripheralName = lastPairedJumpRope?.name
+
+        iredDeviceData.heartRateData.data.macAddress = lastPairedHeartRate?.macAddress
+        iredDeviceData.heartRateData.data.peripheralName = lastPairedHeartRate?.name
+
+        iredDeviceData.thermometerData.data.macAddress = lastPairedThermometer?.macAddress
+        iredDeviceData.thermometerData.data.peripheralName = lastPairedThermometer?.name
+
+        iredDeviceData.oximeterData.data.macAddress = lastPairedOximeter?.macAddress
+        iredDeviceData.oximeterData.data.peripheralName = lastPairedOximeter?.name
+
+        iredDeviceData.sphygmometerData.data.macAddress = lastPairedSphygmometer?.macAddress
+        iredDeviceData.sphygmometerData.data.peripheralName = lastPairedSphygmometer?.name
+
+        iredDeviceData.scaleData.data.macAddress = lastPairedScale?.macAddress
+        iredDeviceData.scaleData.data.peripheralName = lastPairedScale?.name
     }
     private func loadDevice(_ key: StorageKeys) -> PairedDeviceModel? {
         return PairedDeviceModel.decodeFromUserDefault(forKey: key.rawValue)
@@ -380,7 +399,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             if peripheral.identifier.uuidString == currentUUIDString {
                 currentPeripheral = peripheral
                 if let currentPeripheral {
-                    centralManager.connect(currentPeripheral, options: nil)
+                    // centralManager.connect(currentPeripheral, options: nil)
+                    centralManager.connect(peripheral, options: nil)
                     if deviceType != .scale {
                         self.currentUUIDString = nil
                         stopPairing()
@@ -435,8 +455,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 lastPairedSphygmometer = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
                 stopPairing()
             case .scale:
-                //                guard let data = advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data else { return }
-                //                guard let macAddress = extractMacAddress(from: data, offset: 2) else { return }
                 let (uuidString, deviceName, macAddress) = scaleService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
                 if uuidString.isEmpty { return }
                 iredDeviceData.scaleData.state.isPairing = false
@@ -1117,21 +1135,8 @@ extension iREdBluetooth {
     /// Sets the RSSI (Received Signal Strength Indicator) limit for Bluetooth device scanning or filtering.
     ///
     /// - Parameter limit: An integer value representing the minimum acceptable RSSI value. Devices with a weaker signal will be ignored.
-    func setRSSI(limit: Int) {
+    public func setRSSI(limit: Int) {
         setRSSI = limit
-    }
-    
-    /// 从 ManufacturerData 中提取 MAC 地址
-    ///
-    /// - Parameters:
-    ///   - data: 广播中的 ManufacturerData（通常来自 advertisementData）
-    ///   - offset: 从第几个字节开始提取 MAC（体重秤通常是2，跳绳是4）
-    /// - Returns: MAC 地址字符串，如 `"AA:BB:CC:DD:EE:FF"`，如解析失败则返回 nil
-    func extractMacAddress(from data: Data, offset: Int) -> String? {
-        let bytes = [UInt8](data)
-        guard bytes.count >= offset + 6 else { return nil }
-        let mac = bytes[offset..<(offset + 6)].reversed()
-        return mac.map { String(format: "%02X", $0) }.joined(separator: ":")
     }
 }
 
