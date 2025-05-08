@@ -682,7 +682,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             case .scale:
                 peripheral.discoverCharacteristics(nil, for: service)
             case .jumpRope:
-                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first?.peripheral else { return }
                 per.discoverCharacteristics([JumpRopeService.JumpRopeWriteCharacteristicUUID, JumpRopeService.JumpRopeNotifyCharacteristicUUID], for: service)
             case .heartRateBelt:
                 peripheral.discoverCharacteristics([HeartrateProfile.BatteryServiceCharacteristicUUID, HeartrateProfile.HeartrateServiceNotifyCharacteristicUUID], for: service)
