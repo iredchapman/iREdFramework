@@ -682,7 +682,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             case .scale:
                 peripheral.discoverCharacteristics(nil, for: service)
             case .jumpRope:
-                peripheral.discoverCharacteristics([JumpRopeService.JumpRopeWriteCharacteristicUUID, JumpRopeService.JumpRopeNotifyCharacteristicUUID], for: service)
+                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+                per.discoverCharacteristics([JumpRopeService.JumpRopeWriteCharacteristicUUID, JumpRopeService.JumpRopeNotifyCharacteristicUUID], for: service)
             case .heartRateBelt:
                 peripheral.discoverCharacteristics([HeartrateProfile.BatteryServiceCharacteristicUUID, HeartrateProfile.HeartrateServiceNotifyCharacteristicUUID], for: service)
             default:
@@ -727,7 +728,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 // HeartRate
                 HeartrateProfile.HeartrateServiceNotifyCharacteristicUUID,
                 HeartrateProfile.BatteryServiceCharacteristicUUID:
-                peripheral.setNotifyValue(true, for: characteristic)
+                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first?.peripheral else { return }
+                per.setNotifyValue(true, for: characteristic)
             case JumpRopeService.JumpRopeWriteCharacteristicUUID:
                 peripheral.writeValue(JumpRopeService.queryBatteryLevelCommand, for: characteristic, type: .withoutResponse)
                 guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
