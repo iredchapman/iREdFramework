@@ -46,22 +46,22 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     private var currentUUIDString: String? = nil
     private var currentPeripheral: CBPeripheral? = nil
     
-    @Published public private(set) var lastPairedThermometer: PairedDeviceModel? {
+    private var lastPairedThermometer: PairedDeviceModel? {
         didSet { saveDevice(lastPairedThermometer, forKey: .thermometer) }
     }
-    @Published public private(set) var lastPairedOximeter: PairedDeviceModel? {
+    private var lastPairedOximeter: PairedDeviceModel? {
         didSet { saveDevice(lastPairedOximeter, forKey: .oximeter) }
     }
-    @Published public private(set) var lastPairedSphygmometer: PairedDeviceModel? {
+    private var lastPairedSphygmometer: PairedDeviceModel? {
         didSet { saveDevice(lastPairedSphygmometer, forKey: .sphygmometer) }
     }
-    @Published public private(set) var lastPairedJumpRope: PairedDeviceModel? {
+    private var lastPairedJumpRope: PairedDeviceModel? {
         didSet { saveDevice(lastPairedJumpRope, forKey: .jumpRope) }
     }
-    @Published public private(set) var lastPairedHeartRate: PairedDeviceModel? {
+    private var lastPairedHeartRate: PairedDeviceModel? {
         didSet { saveDevice(lastPairedHeartRate, forKey: .heartRate) }
     }
-    @Published public private(set) var lastPairedScale: PairedDeviceModel? {
+    private var lastPairedScale: PairedDeviceModel? {
         didSet { saveDevice(lastPairedScale, forKey: .scale) }
     }
     
@@ -198,7 +198,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
             }
         }
     }
-    
+    /*
     @MainActor public func connect(from deviceType: iREdBluetoothDeviceType) {
         switch deviceType {
         case .thermometer:
@@ -239,7 +239,49 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
 //            connect(to: devices[i])
 //        }
     }
-    
+    */
+    @MainActor public func connect(from deviceType: iREdBluetoothDeviceType) {
+        switch deviceType {
+        case .thermometer:
+            if let lastPairedThermometer, !iredDeviceData.thermometerData.state.isConnected {
+                iredDeviceData.thermometerData.state.isConnecting = true
+                currentUUIDString = lastPairedThermometer.uuidString
+                centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            }
+        case .oximeter:
+            if let lastPairedOximeter, !iredDeviceData.oximeterData.state.isConnected {
+                iredDeviceData.oximeterData.state.isConnecting = true
+                currentUUIDString = lastPairedOximeter.uuidString
+                centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            }
+        case .sphygmometer:
+            if let lastPairedSphygmometer, !iredDeviceData.sphygmometerData.state.isConnected {
+                iredDeviceData.sphygmometerData.state.isConnecting = true
+                currentUUIDString = lastPairedSphygmometer.uuidString
+                centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            }
+        case .jumpRope:
+            if let lastPairedJumpRope, !iredDeviceData.jumpRopeData.state.isConnected {
+                iredDeviceData.jumpRopeData.state.isConnecting = true
+                currentUUIDString = lastPairedJumpRope.uuidString
+                centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            }
+        case .heartRateBelt:
+            if let lastPairedHeartRate, !iredDeviceData.heartRateData.state.isConnected {
+                iredDeviceData.heartRateData.state.isConnecting = true
+                currentUUIDString = lastPairedHeartRate.uuidString
+                centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            }
+        case .scale:
+            if let lastPairedScale, !iredDeviceData.scaleData.state.isConnected {
+                iredDeviceData.scaleData.state.isConnecting = true
+                currentUUIDString = lastPairedScale.uuidString
+                centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+            }
+        default:
+            break
+        }
+    }
     @MainActor public func connect(byUUIDString uuid: String) {
         currentUUIDString = uuid
         startPairing(to: .all_ired_devices)
@@ -398,24 +440,20 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         if let currentUUIDString {
             if peripheral.identifier.uuidString == currentUUIDString {
                 currentPeripheral = peripheral
-                if let currentPeripheral {
-                    // centralManager.connect(currentPeripheral, options: nil)
-                    centralManager.connect(peripheral, options: nil)
-                    if deviceType != .scale {
-                        self.currentUUIDString = nil
-                        stopPairing()
-                    } else {
-                        if lastPairedScale != nil {
-                            // iredDeviceData.oximeterData.state.isConnected = true
-                            iredDeviceData.scaleData.state.isConnected = true
-                            connectingLoadingAlert?.dismiss(animated: true, completion: {
-                                self.connectingLoadingAlert = nil
-                            })
-                            scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
-                        }
-                    }
-                    addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
-                }
+                centralManager.connect(peripheral, options: nil)
+               if deviceType != .scale {
+                   self.currentUUIDString = nil
+                   stopPairing()
+               } else {
+                   if lastPairedScale != nil {
+                        iredDeviceData.oximeterData.state.isConnected = true
+                       connectingLoadingAlert?.dismiss(animated: true, completion: {
+                           self.connectingLoadingAlert = nil
+                       })
+                       scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
+                   }
+               }
+               addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
                 return
             }
             return
