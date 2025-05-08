@@ -437,25 +437,22 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         if currentDeviceType != deviceType && currentDeviceType != .all_ired_devices { return } // Pair only the current device type to avoid filtering all devices
         let uuid = peripheral.identifier.uuidString
         
-        if let currentUUIDString, uuid == currentUUIDString, currentDeviceType == deviceType {
+        if let currentUUIDString, uuid == currentUUIDString {
+            debugPrint("连接持久化存储的设备: ", uuid, "peripheral name: ", peripheral.name ?? "NO Name")
             peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
-            guard let currentPeripheral else { return }
-            centralManager.connect(currentPeripheral, options: nil)
-            if deviceType != .scale {
-                self.currentUUIDString = nil
-                stopPairing()
+            centralManager.connect(peripheral, options: nil)
+            self.currentUUIDString = nil
+            if deviceType == .scale && lastPairedScale != nil {
+                iredDeviceData.oximeterData.state.isConnected = true
+                connectingLoadingAlert?.dismiss(animated: true, completion: {
+                    self.connectingLoadingAlert = nil
+                })
+                scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
             } else {
-                if lastPairedScale != nil {
-                    iredDeviceData.oximeterData.state.isConnected = true
-                    connectingLoadingAlert?.dismiss(animated: true, completion: {
-                        self.connectingLoadingAlert = nil
-                    })
-                    scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
-                }
+                stopPairing()
             }
             addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
-            self.currentUUIDString = "" // 清空
             return
         }
         
