@@ -112,6 +112,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     
     // Start pairing
     @MainActor public func startPairing(to deviceType: iREdBluetoothDeviceType) {
+        debugPrint("正在配对: ", deviceType.rawValue)
         switch deviceType {
         case .thermometer:
             iredDeviceData.thermometerData = .empty
