@@ -440,7 +440,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         if let currentUUIDString, uuid == currentUUIDString, currentDeviceType == deviceType {
             peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
-            centralManager.connect(peripheral, options: nil)
+            guard let currentPeripheral else { return }
+            centralManager.connect(currentPeripheral, options: nil)
             if deviceType != .scale {
                 self.currentUUIDString = nil
                 stopPairing()
