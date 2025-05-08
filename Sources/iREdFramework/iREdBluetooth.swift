@@ -437,7 +437,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         if devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).count == 0 {
             addDevice(device)
         }
-        
+        /*
         if let currentUUIDString, uuid == currentUUIDString {
             debugPrint("连接持久化存储的设备: ", uuid, "peripheral name: ", peripheral.name ?? "NO Name")
             // peripheral.delegate = self // ✅ 确保 delegate 设置
@@ -457,8 +457,13 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             // addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
             return
         }
+        */
+        if let currentUUIDString, currentUUIDString == uuid {
+            
+        } else {
+            if RSSI.intValue < setRSSI { return } // Filter devices that are far away
+        }
         
-        if RSSI.intValue < setRSSI { return } // Filter devices that are far away
         
         // In order to adapt the jump rope device to obtain the mac address, process the delegate callback separately
         /*
@@ -466,6 +471,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
              bleDelegate?.bleDeviceCallback(callback: .discovered(deviceType: deviceType, device: device))
          }
          */
+        
         
         switch deviceType {
             // HealthKit
@@ -511,6 +517,12 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             self.iredDeviceData.jumpRopeData.data = jumpRopeData
             self.lastPairedJumpRope = PairedDeviceModel(uuidString: uuid, name: peripheral.name, macAddress: macAddress)
             self.bleDelegate?.bleDeviceCallback(callback: .discovered(deviceType: deviceType, device: dev))
+            
+            if let currentUUIDString, currentUUIDString == uuidString {
+                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+                centralManager.connect(per, options: nil)
+            }
+            
             self.stopPairing()
         case .heartRateBelt:
             let (uuidString, deviceName, macAddress) = heartrateProfile.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
@@ -682,8 +694,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             case .scale:
                 peripheral.discoverCharacteristics(nil, for: service)
             case .jumpRope:
-                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first?.peripheral else { return }
-                per.discoverCharacteristics([JumpRopeService.JumpRopeWriteCharacteristicUUID, JumpRopeService.JumpRopeNotifyCharacteristicUUID], for: service)
+                peripheral.discoverCharacteristics([JumpRopeService.JumpRopeWriteCharacteristicUUID, JumpRopeService.JumpRopeNotifyCharacteristicUUID], for: service)
             case .heartRateBelt:
                 peripheral.discoverCharacteristics([HeartrateProfile.BatteryServiceCharacteristicUUID, HeartrateProfile.HeartrateServiceNotifyCharacteristicUUID], for: service)
             default:
@@ -728,8 +739,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 // HeartRate
                 HeartrateProfile.HeartrateServiceNotifyCharacteristicUUID,
                 HeartrateProfile.BatteryServiceCharacteristicUUID:
-                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first?.peripheral else { return }
-                per.setNotifyValue(true, for: characteristic)
+                peripheral.setNotifyValue(true, for: characteristic)
             case JumpRopeService.JumpRopeWriteCharacteristicUUID:
                 peripheral.writeValue(JumpRopeService.queryBatteryLevelCommand, for: characteristic, type: .withoutResponse)
                 guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
