@@ -503,6 +503,12 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.scaleData.state.isPaired = true
             iredDeviceData.scaleData.data.peripheralName = name
             lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
+            if let currentUUIDString, currentUUIDString == uuidString {
+                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+                centralManager.connect(per, options: nil)
+                iredDeviceData.oximeterData.state.isConnected = true
+                scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
+            }
             // SportKit
         case .jumpRope:
             let (uuidString, deviceName, macAddress) = jumpRopeService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
@@ -523,7 +529,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 centralManager.connect(per, options: nil)
             }
             
-            self.stopPairing()
+            stopPairing()
         case .heartRateBelt:
             let (uuidString, deviceName, macAddress) = heartrateProfile.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
             if uuidString.isEmpty { return }
@@ -531,6 +537,12 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.heartRateData.state.isPaired = true
             iredDeviceData.heartRateData.data.peripheralName = name
             lastPairedHeartRate = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
+            
+            if let currentUUIDString, currentUUIDString == uuidString {
+                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+                centralManager.connect(per, options: nil)
+            }
+            
             stopPairing()
         default:
             /// print("others")
