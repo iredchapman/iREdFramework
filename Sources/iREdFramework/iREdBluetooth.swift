@@ -437,25 +437,23 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         let macAddress: String? = nil
         let uuid = peripheral.identifier.uuidString
         
-        if let currentUUIDString {
-            if peripheral.identifier.uuidString == currentUUIDString {
-                currentPeripheral = peripheral
-                centralManager.connect(peripheral, options: nil)
-               if deviceType != .scale {
-                   self.currentUUIDString = nil
-                   stopPairing()
-               } else {
-                   if lastPairedScale != nil {
-                        iredDeviceData.oximeterData.state.isConnected = true
-                       connectingLoadingAlert?.dismiss(animated: true, completion: {
-                           self.connectingLoadingAlert = nil
-                       })
-                       scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
-                   }
-               }
-               addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
-                return
+        if let currentUUIDString, peripheral.identifier.uuidString == currentUUIDString {
+            peripheral.delegate = self // ✅ 确保 delegate 设置
+            currentPeripheral = peripheral
+            centralManager.connect(peripheral, options: nil)
+            if deviceType != .scale {
+                self.currentUUIDString = nil
+                stopPairing()
+            } else {
+                if lastPairedScale != nil {
+                    iredDeviceData.oximeterData.state.isConnected = true
+                    connectingLoadingAlert?.dismiss(animated: true, completion: {
+                        self.connectingLoadingAlert = nil
+                    })
+                    scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
+                }
             }
+            addDevice(iRedDevice(deviceType: deviceType, name: name, peripheral: peripheral, rssi: RSSI, isConnected: true))
             return
         }
         
