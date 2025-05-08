@@ -245,6 +245,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     }
     */
     @MainActor public func connect(from deviceType: iREdBluetoothDeviceType) {
+        initPairedDevices()
         currentDeviceType = deviceType
         switch deviceType {
         case .thermometer:
