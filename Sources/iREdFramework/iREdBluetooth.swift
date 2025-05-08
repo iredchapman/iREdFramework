@@ -436,8 +436,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             debugPrint("连接持久化存储的设备: ", uuid, "peripheral name: ", peripheral.name ?? "NO Name")
             // peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
-            guard let per = self.devices.filter({ $0.peripheral.identifier.uuidString == uuid }).first else { return }
-            centralManager.connect(per.peripheral, options: nil)
+            guard let currentPeripheral else { return }
+            centralManager.connect(self.currentPeripheral!, options: nil)
             self.currentUUIDString = nil
             if deviceType == .scale && lastPairedScale != nil {
                 iredDeviceData.oximeterData.state.isConnected = true
@@ -536,7 +536,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         })
         guard let name = peripheral.name else { return }
         currentUUIDString = nil
-        currentPeripheral = nil
+        // currentPeripheral = nil
         /// print("Connection successful: \(name)")
         let deviceType: iREdBluetoothDeviceType = deviceTypeByPeripheralName(name)
         guard let device = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first else { return }
