@@ -4,70 +4,22 @@ import HealthKitFramework
 import SportKitFramework
 import UIKit
 import SwiftUI
-//import Combine
 
-// MARK: BlueTooth Delegate
-public protocol BlueToothDelegate: AnyObject {
-    func bluetoothStateDidChange(state: BlueToothState)
-    func bleDeviceCallback(callback: BLEDeviceCallback)
-}
-public extension BlueToothDelegate {
-    func bluetoothStateDidChange(state: BlueToothState) {}
-}
-
-// MARK: HealthKit Delegate
-public protocol HealthKitDelegate: AnyObject {
-    func thermometerCallback(callback: ThermometerCallback)
-    func oximeterCallback(callback: OximeterCallback)
-    func sphygmometerCallback(callback: SphygmometerCallback)
-    func scaleCallback(callback: ScaleCallback)
-}
-public extension HealthKitDelegate {
-    func thermometerCallback(callback: ThermometerCallback) {}
-    func oximeterCallback(callback: OximeterCallback) {}
-    func sphygmometerCallback(callback: SphygmometerCallback) {}
-    func scaleCallback(callback: ScaleCallback) {}
-}
-
-// MARK: SportKit Delegate
-public protocol SportKitDelegate: AnyObject {
-    func jumpRopeCallback(callback: JumpRopeCallback)
-    func heartRateCallback(callback: HeartRateCallback)
-    func scaleCallback(callback: ScaleCallback)
-}
-public extension SportKitDelegate {
-    func jumpRopeCallback(callback: JumpRopeCallback) {}
-    func heartRateCallback(callback: HeartRateCallback) {}
-    func scaleCallback(callback: ScaleCallback) {}
-}
-
-
-public struct PairedDeviceModel: Codable {
-    public var uuidString: String
-    public var name: String?
-    public var macAddress: String?
-    
-    public init(uuidString: String, name: String?, macAddress: String?) {
-        self.uuidString = uuidString
-        self.name = name
-        self.macAddress = macAddress
-    }
-    
-    public static func decodeFromUserDefault(forKey key: String) -> PairedDeviceModel? {
-        if let data = UserDefaults.standard.data(forKey: key) {
-            let decoder = JSONDecoder()
-            if let model = try? decoder.decode(PairedDeviceModel.self, from: data) {
-                return model
-            }
-        }
-        return nil
-    }
-}
 
 // MARK: MAIN Method
 @MainActor
 public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     @MainActor public static let shared = iREdBluetooth()
+    
+    // UserDefaults Keys
+    private enum StorageKeys: String {
+        case thermometer = "lastPairedThermometer"
+        case oximeter = "lastPairedOximeter"
+        case sphygmometer = "lastPairedSphygmometer"
+        case jumpRope = "lastPairedJumpRope"
+        case heartRate = "lastPairedHeartRate"
+        case scale = "lastPairedScale"
+    }
     
     // Delegates
     private weak var hkDelegate: HealthKitDelegate?
@@ -94,12 +46,24 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     private var currentUUIDString: String? = nil
     private var currentPeripheral: CBPeripheral? = nil
     
-    @Published public private(set) var lastPairedThermometer: PairedDeviceModel? = nil
-    @Published public private(set) var lastPairedOximeter: PairedDeviceModel? = nil
-    @Published public private(set) var lastPairedSphygmometer: PairedDeviceModel? = nil
-    @Published public private(set) var lastPairedJumpRope: PairedDeviceModel? = nil
-    @Published public private(set) var lastPairedHeartRate: PairedDeviceModel? = nil
-    @Published public private(set) var lastPairedScale: PairedDeviceModel? = nil
+    @Published public private(set) var lastPairedThermometer: PairedDeviceModel? {
+        didSet { saveDevice(lastPairedThermometer, forKey: .thermometer) }
+    }
+    @Published public private(set) var lastPairedOximeter: PairedDeviceModel? {
+        didSet { saveDevice(lastPairedOximeter, forKey: .oximeter) }
+    }
+    @Published public private(set) var lastPairedSphygmometer: PairedDeviceModel? {
+        didSet { saveDevice(lastPairedSphygmometer, forKey: .sphygmometer) }
+    }
+    @Published public private(set) var lastPairedJumpRope: PairedDeviceModel? {
+        didSet { saveDevice(lastPairedJumpRope, forKey: .jumpRope) }
+    }
+    @Published public private(set) var lastPairedHeartRate: PairedDeviceModel? {
+        didSet { saveDevice(lastPairedHeartRate, forKey: .heartRate) }
+    }
+    @Published public private(set) var lastPairedScale: PairedDeviceModel? {
+        didSet { saveDevice(lastPairedScale, forKey: .scale) }
+    }
     
     @Published private var setRSSI: Int = -60
     
@@ -116,6 +80,9 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     
     public override init() {
         super.init()
+        
+        initPairedDevices()
+        
         centralManager = CBCentralManager(delegate: self, queue: .main)
         
         thermometerService = ThermometerService()
@@ -135,13 +102,6 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         
         heartrateProfile = HeartrateProfile()
         heartrateProfile.delegate = self
-        
-        if lastPairedJumpRope != nil {
-            iredDeviceData.jumpRopeData.state.isPaired = true
-        } else if lastPairedHeartRate != nil {
-            iredDeviceData.heartRateData.state.isPaired = true
-        }
-        
     }
     
     init(delegate: AnyObject? = nil) {
@@ -321,12 +281,63 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         }
         return deviceType
     }
+}
+
+// MARK: 持久化存储
+extension iREdBluetooth {
+    private func initPairedDevices() {
+        self.lastPairedThermometer = loadDevice(.thermometer)
+        self.lastPairedOximeter = loadDevice(.oximeter)
+        self.lastPairedSphygmometer = loadDevice(.sphygmometer)
+        self.lastPairedJumpRope = loadDevice(.jumpRope)
+        self.lastPairedHeartRate = loadDevice(.heartRate)
+        self.lastPairedScale = loadDevice(.scale)
+
+        // 设置 UI 显示状态或内部逻辑标志
+        iredDeviceData.jumpRopeData.state.isPaired = lastPairedJumpRope != nil
+        iredDeviceData.heartRateData.state.isPaired = lastPairedHeartRate != nil
+        iredDeviceData.thermometerData.state.isPaired = lastPairedThermometer != nil
+        iredDeviceData.oximeterData.state.isPaired = lastPairedOximeter != nil
+        iredDeviceData.sphygmometerData.state.isPaired = lastPairedSphygmometer != nil
+        iredDeviceData.scaleData.state.isPaired = lastPairedScale != nil
+    }
+    private func loadDevice(_ key: StorageKeys) -> PairedDeviceModel? {
+        return PairedDeviceModel.decodeFromUserDefault(forKey: key.rawValue)
+    }
+    // MARK: - Update Methods
+    private func updateThermometer(_ device: PairedDeviceModel?) {
+        lastPairedThermometer = device
+    }
     
-    //    public func initialize(delegate: AnyObject? = nil) {
-    //        hkDelegate = delegate as? HealthKitDelegate
-    //        skDelegate = delegate as? SportKitDelegate
-    //        bleDelegate = delegate as? BlueToothDelegate
-    //    }
+    private func updateOximeter(_ device: PairedDeviceModel?) {
+        lastPairedOximeter = device
+    }
+    
+    private func updateSphygmometer(_ device: PairedDeviceModel?) {
+        lastPairedSphygmometer = device
+    }
+    
+    private func updateJumpRope(_ device: PairedDeviceModel?) {
+        lastPairedJumpRope = device
+    }
+    
+    private func updateHeartRate(_ device: PairedDeviceModel?) {
+        lastPairedHeartRate = device
+    }
+    
+    private func updateScale(_ device: PairedDeviceModel?) {
+        lastPairedScale = device
+    }
+    
+    // MARK: - Save Method
+    private func saveDevice(_ device: PairedDeviceModel?, forKey key: StorageKeys) {
+        let encoder = JSONEncoder()
+        if let device = device, let encoded = try? encoder.encode(device) {
+            UserDefaults.standard.set(encoded, forKey: key.rawValue)
+        } else {
+            UserDefaults.standard.removeObject(forKey: key.rawValue)
+        }
+    }
 }
 
 // MARK: CBCentralManagerDelegate
@@ -951,50 +962,6 @@ extension iREdBluetooth {
         case time(second: Int)
         case count(count: Int)
     }
-    /*
-     // MARK: 已废弃
-     public func setMode(_ mode: SetJumpRopeMode, isFirst: Bool = false) {
-     guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
-     if !isFirst {
-     // iredDeviceData.jumpRopeData.state = .none
-     stopCurrentMode()
-     }
-     // Set the mode for the first time and clear the data
-     iredDeviceData.jumpRopeData.data = .empty
-     switch mode {
-     case .free:
-     jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
-     case .time(let seconds):
-     if seconds < 0 {
-     // iREdAlert.shared.showTipAlert(title: "Setting mode error", message: "In time mode, time cannot be empty.", image: nil, delay: 2)
-     return
-     }
-     jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 1, setting: seconds)
-     case .count(let count):
-     if count < 0 {
-     // iREdAlert.shared.showTipAlert(title: "Setting mode error", message: "In count mode, the quantity cannot be empty.", image: nil, delay: 2)
-     return
-     }
-     jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
-     }
-     
-     if !isFirst {
-     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-     self.iredDeviceData.jumpRopeData.data = .empty // Termination mode
-     //                self.iredDeviceData.jumpRopeData.state.isMeasurementCompleted = false
-     //                self.iredDeviceData.jumpRopeData.state.isMeasuring = true // Jumping rope...
-     }
-     }
-     }
-     // MARK: 已废弃
-     private func stopCurrentMode() {
-     guard let device = devices.filter({ $0.deviceType == .jumpRope }).first else { return }
-     jumpRopeService.stopCurrentMode(peripheral: device.peripheral)
-     //        iredDeviceData.jumpRopeData.data = .empty // Termination mode
-     //        iredDeviceData.jumpRopeData.state.isMeasurementCompleted = true
-     //        iredDeviceData.jumpRopeData.state.isMeasuring = false
-     }
-     */
 }
 extension iREdBluetooth {
     @MainActor private static var jumpRopeTimer: Timer?
@@ -1165,5 +1132,64 @@ extension iREdBluetooth {
         guard bytes.count >= offset + 6 else { return nil }
         let mac = bytes[offset..<(offset + 6)].reversed()
         return mac.map { String(format: "%02X", $0) }.joined(separator: ":")
+    }
+}
+
+
+// MARK: BlueTooth Delegate
+public protocol BlueToothDelegate: AnyObject {
+    func bluetoothStateDidChange(state: BlueToothState)
+    func bleDeviceCallback(callback: BLEDeviceCallback)
+}
+public extension BlueToothDelegate {
+    func bluetoothStateDidChange(state: BlueToothState) {}
+}
+
+// MARK: HealthKit Delegate
+public protocol HealthKitDelegate: AnyObject {
+    func thermometerCallback(callback: ThermometerCallback)
+    func oximeterCallback(callback: OximeterCallback)
+    func sphygmometerCallback(callback: SphygmometerCallback)
+    func scaleCallback(callback: ScaleCallback)
+}
+public extension HealthKitDelegate {
+    func thermometerCallback(callback: ThermometerCallback) {}
+    func oximeterCallback(callback: OximeterCallback) {}
+    func sphygmometerCallback(callback: SphygmometerCallback) {}
+    func scaleCallback(callback: ScaleCallback) {}
+}
+
+// MARK: SportKit Delegate
+public protocol SportKitDelegate: AnyObject {
+    func jumpRopeCallback(callback: JumpRopeCallback)
+    func heartRateCallback(callback: HeartRateCallback)
+    func scaleCallback(callback: ScaleCallback)
+}
+public extension SportKitDelegate {
+    func jumpRopeCallback(callback: JumpRopeCallback) {}
+    func heartRateCallback(callback: HeartRateCallback) {}
+    func scaleCallback(callback: ScaleCallback) {}
+}
+
+
+public struct PairedDeviceModel: Codable {
+    public var uuidString: String
+    public var name: String?
+    public var macAddress: String?
+    
+    public init(uuidString: String, name: String?, macAddress: String?) {
+        self.uuidString = uuidString
+        self.name = name
+        self.macAddress = macAddress
+    }
+    
+    public static func decodeFromUserDefault(forKey key: String) -> PairedDeviceModel? {
+        if let data = UserDefaults.standard.data(forKey: key) {
+            let decoder = JSONDecoder()
+            if let model = try? decoder.decode(PairedDeviceModel.self, from: data) {
+                return model
+            }
+        }
+        return nil
     }
 }
