@@ -506,6 +506,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         case .jumpRope:
             let (uuidString, deviceName, macAddress) = jumpRopeService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
             if uuidString.isEmpty { return }
+            debugPrint("跳绳-", "配对的UUID: ", uuid, "iREdFramework返回的uuid: ", uuidString)
             iredDeviceData.jumpRopeData.state.isPairing = false
             iredDeviceData.jumpRopeData.state.isPaired = true
             if !self.isJumpRopeMacAddressHandled {
