@@ -141,7 +141,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         default:
             break
         }
-        
+        currentUUIDString = nil
         currentDeviceType = deviceType
         centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
     }
@@ -162,6 +162,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     }
     
     // Connecting device
+    /*
     private func connect(to device: iRedDevice) {
         switch device.deviceType {
         case .thermometer:
@@ -199,6 +200,8 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
             }
         }
     }
+     */
+    
     /*
     @MainActor public func connect(from deviceType: iREdBluetoothDeviceType) {
         switch deviceType {
@@ -439,7 +442,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         
         if let currentUUIDString, uuid == currentUUIDString {
             debugPrint("连接持久化存储的设备: ", uuid, "peripheral name: ", peripheral.name ?? "NO Name")
-            peripheral.delegate = self // ✅ 确保 delegate 设置
+            // peripheral.delegate = self // ✅ 确保 delegate 设置
             currentPeripheral = peripheral
             centralManager.connect(peripheral, options: nil)
             self.currentUUIDString = nil
