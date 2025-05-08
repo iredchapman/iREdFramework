@@ -529,6 +529,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
     
     // MARK: Connect devices
     @MainActor public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        debugPrint("连接成功", peripheral.name)
         connectingLoadingAlert?.dismiss(animated: true, completion: {
             self.connectingLoadingAlert = nil
         })
@@ -587,6 +588,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
     
     // connection failed
     @MainActor public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+        debugPrint("连接失败", peripheral.name)
         connectingLoadingAlert?.dismiss(animated: true, completion: {
             self.connectingLoadingAlert = nil
         })
@@ -615,6 +617,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
     
     // MARK: Disconnect devices
     @MainActor public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        debugPrint("断开连接成功", peripheral.name)
         guard let name = peripheral.name else { return }
         guard let device = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first else { return }
         /// print("disconnect: \(name)")
