@@ -165,6 +165,10 @@ public protocol HealthDeviceModel {
 }
 
 public struct HealthKitThermometerModel {
+    /// 蓝牙设备名称
+    public var peripheralName: String? = nil
+    /// 设备 MAC 地址
+    public var macAddress: String? = nil
     public var battery: String? = nil
     public var temperature: Double? = nil
     public var modeCode: Int? = nil
@@ -181,6 +185,10 @@ public struct HealthKitThermometerData {
 
 
 public struct HealthKitOximeterModel {
+    /// 蓝牙设备名称
+    public var peripheralName: String? = nil
+    /// 设备 MAC 地址
+    public var macAddress: String? = nil
     public var battery: Int? = nil
     public var pulsData: Data? = nil
     
@@ -237,6 +245,10 @@ public struct HealthKitOximeterData {
 }
 
 public struct HealthKitSphygmometerModel {
+    /// 蓝牙设备名称
+    public var peripheralName: String? = nil
+    /// 设备 MAC 地址
+    public var macAddress: String? = nil
     public var pressure: Int? = nil
     public var pulseStatus: Int? = nil
     
@@ -255,7 +267,10 @@ public struct HealthKitSphygmometerData {
 }
 
 public struct HealthKitScaleModel {
+    /// 蓝牙设备名称
     public var peripheralName: String? = nil
+    /// 设备 MAC 地址
+    public var macAddress: String? = nil
     public var weight: Double? = nil
     public var isFinalResult: Bool? = nil
     
@@ -402,6 +417,8 @@ public struct JumpRopeData: Equatable {
 public struct HeartRateBeltModel: Equatable {
     /// 蓝牙设备名称
     public var peripheralName: String? = nil
+    /// 设备 MAC 地址
+    public var macAddress: String? = nil
     /// 当前心率值（最新一次）
     public var heartrate: Int? = nil
     /// 当前电池电量（百分比）
