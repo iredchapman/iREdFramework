@@ -465,7 +465,8 @@ public struct HealthKitScaleModel {
             return 0
         }
         let heightInMeters = Double(height) / 100.0
-        return weight / pow(heightInMeters, 2)
+        let result = Double(String(format: "%.2f", weight / pow(heightInMeters, 2)))
+        return result ?? 0
     }
     
     /// 根据 BMI、年龄和性别估算体脂率。
@@ -481,7 +482,8 @@ public struct HealthKitScaleModel {
         let gender: Double = tempGender.lowercased() == "male" ? 1 : 0
         let bmi = toBMI(height: height, weight: weight ?? 0)
         let bodyfat = (1.39 * bmi) + (0.16 * Double(age)) - (10.34 * gender) - 9
-        return max(bodyfat, 0)
+        let result = Double(String(format: "%.2f", max(bodyfat, 0)))
+        return result ?? 0
     }
     
     /// 根据 BMI 值评估健康状态。
