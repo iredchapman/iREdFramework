@@ -99,7 +99,27 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         bleDelegate = delegate as? BlueToothDelegate
     }
     
-    // Start pairing
+    /// 开始配对指定类型的 iRED 蓝牙设备（清空历史数据并开启扫描）
+    ///
+    /// - Parameter deviceType: 需要配对的蓝牙设备类型，例如 `.thermometer`, `.scale` 等。
+    ///
+    /// 此方法用于触发新设备的配对流程，主要操作包括：
+    /// 1. 重置当前设备的数据为 `.empty`；
+    /// 2. 设置对应设备的 `isPairing` 状态为 `true`；
+    /// 3. 清除当前保存的已配对设备 UUID；
+    /// 4. 启动扫描所有外围设备（允许重复结果）；
+    /// 5. 设置 `currentDeviceType` 与 `currentUUIDString` 为当前配对目标。
+    ///
+    /// ⚠️ 注意事项：
+    /// - 本方法需在主线程调用（已使用 `@MainActor` 注解）
+    /// - 会影响之前的配对状态和连接状态，请确保用户意图明确再调用此方法
+    /// - `didDiscoverPeripheral` 回调中需要根据设备类型和 `isPairing` 状态判断是否允许连接
+    ///
+    /// - Example:
+    /// ```swift
+    /// let bleManager = iREdBluetooth.shared
+    /// await bleManager.startPairing(to: .oximeter)
+    /// ```
     @MainActor public func startPairing(to deviceType: iREdBluetoothDeviceType) {
         debugPrint("正在配对: ", deviceType.rawValue)
         switch deviceType {
@@ -135,7 +155,21 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
     }
     
-    // Stop pairing
+    /// 停止所有 iRED 蓝牙设备的配对与连接流程
+    ///
+    /// 此方法会统一重置所有设备的状态标志，包括：
+    /// - 停止配对状态 `isPairing`
+    /// - 停止连接中状态 `isConnecting`
+    /// - 停止体重秤的测量状态 `isMeasuring` 和 `isMeasurementCompleted`
+    /// - 停止正在进行的蓝牙扫描
+    ///
+    /// 该方法适用于用户主动取消配对流程，或当需强制中止所有设备连接尝试时使用。
+    ///
+    /// - Example:
+    /// ```swift
+    /// let bleManager = iREdBluetooth.shared
+    /// bleManager.stopPairing()
+    /// ```
     public func stopPairing() {
         iredDeviceData.thermometerData.state.isPairing = false
         iredDeviceData.oximeterData.state.isPairing = false
@@ -144,95 +178,46 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         iredDeviceData.heartRateData.state.isPairing = false
         iredDeviceData.scaleData.state.isPairing = false
         
+        iredDeviceData.thermometerData.state.isConnecting = false
+        iredDeviceData.oximeterData.state.isConnecting = false
+        iredDeviceData.sphygmometerData.state.isConnecting = false
+        iredDeviceData.jumpRopeData.state.isConnecting = false
+        iredDeviceData.heartRateData.state.isConnecting = false
+        iredDeviceData.scaleData.state.isConnecting = false
+        
         iredDeviceData.scaleData.state.isMeasuring = false
         iredDeviceData.scaleData.state.isMeasurementCompleted = false
         centralManager.stopScan()
         debugPrint("stop pairing")
     }
     
-    // Connecting device
-    /*
-    private func connect(to device: iRedDevice) {
-        switch device.deviceType {
-        case .thermometer:
-            if !iredDeviceData.thermometerData.state.isConnected {
-                iredDeviceData.thermometerData.state.isConnecting = true
-            }
-        case .oximeter:
-            if !iredDeviceData.oximeterData.state.isConnected {
-                iredDeviceData.oximeterData.state.isConnecting = true
-            }
-        case .sphygmometer:
-            if !iredDeviceData.sphygmometerData.state.isConnected {
-                iredDeviceData.sphygmometerData.state.isConnecting = true
-            }
-        case .jumpRope:
-            if !iredDeviceData.jumpRopeData.state.isConnected {
-                iredDeviceData.jumpRopeData.state.isConnecting = true
-            }
-        case .heartRateBelt:
-            if !iredDeviceData.heartRateData.state.isConnected {
-                iredDeviceData.heartRateData.state.isConnecting = true
-            }
-        case .scale:
-            if !iredDeviceData.scaleData.state.isConnected {
-                iredDeviceData.scaleData.state.isConnecting = true
-            }
-        default:
-            break
-        }
-        // connectingLoadingAlert = iREdAlert.shared.showLoadingAlert(title: "Connecting", message: "Connecting to \(device.name)...")
-        // Avoid duplicate connections
-        if let idx = devices.firstIndex(where: { $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }) {
-            if !devices[idx].isConnected {
-                centralManager.connect(device.peripheral, options: nil)
-            }
-        }
-    }
-     */
-    
-    /*
-    @MainActor public func connect(from deviceType: iREdBluetoothDeviceType) {
-        switch deviceType {
-        case .thermometer:
-            if let lastPairedThermometer, !iredDeviceData.thermometerData.state.isConnected {
-                iredDeviceData.thermometerData.state.isConnecting = true
-                connect(byUUIDString: lastPairedThermometer.uuidString)
-            }
-        case .oximeter:
-            if let lastPairedOximeter, !iredDeviceData.oximeterData.state.isConnected {
-                iredDeviceData.oximeterData.state.isConnecting = true
-                connect(byUUIDString: lastPairedOximeter.uuidString)
-            }
-        case .sphygmometer:
-            if let lastPairedSphygmometer, !iredDeviceData.sphygmometerData.state.isConnected {
-                iredDeviceData.sphygmometerData.state.isConnecting = true
-                connect(byUUIDString: lastPairedSphygmometer.uuidString)
-            }
-        case .jumpRope:
-            if let lastPairedJumpRope, !iredDeviceData.jumpRopeData.state.isConnected {
-                /// print("Start connecting the jump rope")
-                iredDeviceData.jumpRopeData.state.isConnecting = true
-                connect(byUUIDString: lastPairedJumpRope.uuidString)
-            }
-        case .heartRateBelt:
-            if let lastPairedHeartRate, !iredDeviceData.heartRateData.state.isConnected {
-                iredDeviceData.heartRateData.state.isConnecting = true
-                connect(byUUIDString: lastPairedHeartRate.uuidString)
-            }
-        case .scale:
-            if let lastPairedScale, !iredDeviceData.scaleData.state.isConnected {
-                iredDeviceData.scaleData.state.isConnecting = true
-                connect(byUUIDString: lastPairedScale.uuidString)
-            }
-        default:
-            break
-        }
-//        if let i = devices.firstIndex(where: { $0.deviceType == deviceType }) {
-//            connect(to: devices[i])
-//        }
-    }
-    */
+    /// 根据指定设备类型发起蓝牙连接请求（仅连接已配对设备）
+    ///
+    /// - Parameter deviceType: 要连接的 iRED 蓝牙设备类型（如 `.oximeter`, `.scale` 等）
+    ///
+    /// 此方法会：
+    /// 1. 初始化已配对设备信息；
+    /// 2. 设置当前操作的设备类型；
+    /// 3. 根据设备类型判断对应设备是否已连接，若未连接则发起连接扫描。
+    ///
+    /// 发起连接的前提是设备已配对（已存储 UUID），
+    /// 若存在配对记录且当前未连接状态，则会设置为连接中并启动扫描（允许重复扫描）。
+    ///
+    /// - 注意事项：
+    ///   - 本方法在 `@MainActor` 上运行，需确保在主线程调用；
+    ///   - 若对应设备数据状态已为已连接（`isConnected == true`），则不会重新扫描；
+    ///   - 扫描使用 `scanForPeripherals(withServices: nil)`，匹配设备后应通过 `didDiscover` 回调判断 UUID 并连接。
+    ///
+    /// - Example:
+    /// ```swift
+    /// let bleManager = iREdBluetooth.shared
+    ///
+    /// // 发起连接体温计
+    /// await bleManager.connect(from: .thermometer)
+    ///
+    /// // 发起连接心率带
+    /// await bleManager.connect(from: .heartRateBelt)
+    /// ```
     @MainActor public func connect(from deviceType: iREdBluetoothDeviceType) {
         initPairedDevices()
         currentDeviceType = deviceType
@@ -277,18 +262,34 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
             break
         }
     }
-    @MainActor public func connect(byUUIDString uuid: String) {
-        currentUUIDString = uuid
-        startPairing(to: .all_ired_devices)
-        //        centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
-    }
     
     // disconnect
     public func disconnect(from device: iRedDevice) {
         centralManager.cancelPeripheralConnection(device.peripheral)
     }
     
-    // Disconnect by device type
+    /// 断开指定类型的蓝牙设备连接
+    ///
+    /// - Parameter deviceType: 需要断开的设备类型，支持单个设备类型（如 `.oximeter`），
+    ///                         或 `.all_ired_devices` 表示断开所有 iRED 蓝牙设备。
+    ///
+    /// 当 `deviceType == .all_ired_devices` 时，会遍历并断开所有当前已连接的设备；
+    /// 否则仅断开与指定类型匹配的第一个设备。
+    ///
+    /// - Note:
+    /// 此方法基于 `iREdBluetoothDeviceType` 枚举进行匹配，
+    /// 并使用 `centralManager.cancelPeripheralConnection()` 进行断开操作。
+    ///
+    /// - Example:
+    /// ```swift
+    /// let bleManager = iREdBluetooth.shared
+    ///
+    /// // 断开体温计设备
+    /// bleManager.disconnect(from: .thermometer)
+    ///
+    /// // 断开所有已连接的 iRED 设备
+    /// bleManager.disconnect(from: .all_ired_devices)
+    /// ```
     public func disconnect(from deviceType: iREdBluetoothDeviceType) {
         if deviceType == .all_ired_devices {
             for device in devices {
@@ -329,7 +330,7 @@ extension iREdBluetooth {
         self.lastPairedJumpRope = loadDevice(.jumpRope)
         self.lastPairedHeartRate = loadDevice(.heartRate)
         self.lastPairedScale = loadDevice(.scale)
-
+        
         // 设置是否已配对
         iredDeviceData.jumpRopeData.state.isPaired = lastPairedJumpRope != nil
         iredDeviceData.heartRateData.state.isPaired = lastPairedHeartRate != nil
@@ -337,23 +338,23 @@ extension iREdBluetooth {
         iredDeviceData.oximeterData.state.isPaired = lastPairedOximeter != nil
         iredDeviceData.sphygmometerData.state.isPaired = lastPairedSphygmometer != nil
         iredDeviceData.scaleData.state.isPaired = lastPairedScale != nil
-
+        
         // 设置 macAddress 和 peripheralName
         iredDeviceData.jumpRopeData.data.macAddress = lastPairedJumpRope?.macAddress
         iredDeviceData.jumpRopeData.data.peripheralName = lastPairedJumpRope?.name
-
+        
         iredDeviceData.heartRateData.data.macAddress = lastPairedHeartRate?.macAddress
         iredDeviceData.heartRateData.data.peripheralName = lastPairedHeartRate?.name
-
+        
         iredDeviceData.thermometerData.data.macAddress = lastPairedThermometer?.macAddress
         iredDeviceData.thermometerData.data.peripheralName = lastPairedThermometer?.name
-
+        
         iredDeviceData.oximeterData.data.macAddress = lastPairedOximeter?.macAddress
         iredDeviceData.oximeterData.data.peripheralName = lastPairedOximeter?.name
-
+        
         iredDeviceData.sphygmometerData.data.macAddress = lastPairedSphygmometer?.macAddress
         iredDeviceData.sphygmometerData.data.peripheralName = lastPairedSphygmometer?.name
-
+        
         iredDeviceData.scaleData.data.macAddress = lastPairedScale?.macAddress
         iredDeviceData.scaleData.data.peripheralName = lastPairedScale?.name
     }
@@ -437,10 +438,8 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         if devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).count == 0 {
             addDevice(device)
         }
-        if let currentUUIDString, currentUUIDString == uuid {
-            
-        } else {
-            if RSSI.intValue < setRSSI { return } // Filter devices that are far away
+        if currentUUIDString != uuid {
+            if RSSI.intValue < setRSSI { return } // 过滤信号弱的设备
         }
         
         switch deviceType {
@@ -540,7 +539,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         })
         guard let name = peripheral.name else { return }
         currentUUIDString = nil
-        // currentPeripheral = nil
         /// print("Connection successful: \(name)")
         let deviceType: iREdBluetoothDeviceType = deviceTypeByPeripheralName(name)
         guard let device = devices.filter({ $0.peripheral.identifier.uuidString == peripheral.identifier.uuidString }).first else { return }
@@ -582,7 +580,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.heartRateData.state.isConnected = true
             iredDeviceData.heartRateData.state.isConnecting = false
         default:
-            /// print("other")
             break
         }
         devices.updateDevice(with: peripheral.identifier.uuidString) { device in
@@ -597,7 +594,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             self.connectingLoadingAlert = nil
         })
         /// print("Connection failure: \(error?.localizedDescription ?? "Unknown error")")
-        // iREdAlert.shared.showAlert(title: "Connection failure", message: error?.localizedDescription ?? "Unknown error")
         guard let name = peripheral.name else { return }
         let deviceType: iREdBluetoothDeviceType = deviceTypeByPeripheralName(name)
         switch deviceType {
@@ -653,7 +649,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.heartRateData.state.isDisconnected = true
             stopHeartRateRecording()
         default:
-            /// print("Other")
             break
         }
         devices.updateDevice(with: peripheral.identifier.uuidString) { device in
@@ -812,6 +807,10 @@ extension iREdBluetooth: @preconcurrency SportKitFramework.ScaleServiceDelegate 
 
 // MARK: Thermometer
 extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
+    /// - Parameters:
+    ///   - temperature: Temperature
+    ///   - mode: Mode
+    ///   - modeString: Mode description
     public func thermometerTemperatureCallback(temperature: Double, mode: Int, modeString: String) {
         hkDelegate?.thermometerCallback(callback: .temperature(temperature: temperature, mode: mode, modeString: modeString))
         var thermometerData = iredDeviceData.thermometerData
@@ -829,11 +828,17 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
         }
     }
     
+    /// - Parameters:
+    ///   - error: Error code
+    ///   - description: Error description
     public func thermometerErrorCallback(error: Int, description: String) {
         hkDelegate?.thermometerCallback(callback: .error(error: error, description: description))
         iredDeviceData.thermometerData.state.isMeasurementError = MeasurementError(errorCode: error, errorDescription: description)
     }
     
+    /// - Parameters:
+    ///   - type: Battery type
+    ///   - description: Battery description
     @MainActor public func thermometerBatteryLevelCallback(type: Int, description: String) {
         hkDelegate?.thermometerCallback(callback: .battery(type: type, description: description))
         iredDeviceData.thermometerData.data = .empty
@@ -844,13 +849,19 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
 
 // MARK: Oximeter
 extension iREdBluetooth: @preconcurrency OximeterServiceDelegate {
+    /// - Parameters:
+    ///   - batteryPercentage: 电池电量
+    ///   - pulseData: 脉搏数据
     public func oximeterBatteryCallback(batteryPercentage: Int, pulseData: Data) {
         hkDelegate?.oximeterCallback(callback: .battery(batteryPercentage: batteryPercentage, pulseData: pulseData))
         iredDeviceData.oximeterData.data.battery = batteryPercentage
         iredDeviceData.oximeterData.data.pulsData = pulseData
         iredDeviceData.oximeterData.data.PlethysmographyArray += pulseData.map(Int.init)
     }
-    
+    /// - Parameters:
+    ///   - pulse: 脉搏
+    ///   - spo2: 血氧
+    ///   - pi: 灌注指数
     public func oximeterMeasurementCallback(pulse: Int, spo2: Int, pi: Double) {
         hkDelegate?.oximeterCallback(callback: .measurement(pulse: pulse, spo2: spo2, pi: pi))
         iredDeviceData.oximeterData.data.pulse = pulse == 255 ? 0 : pulse
@@ -862,6 +873,16 @@ extension iREdBluetooth: @preconcurrency OximeterServiceDelegate {
     }
 }
 extension iREdBluetooth {
+    /// - Parameters:
+    ///   - avgSpO2: 平均血氧值
+    ///   - avgBPM: 平均心率值
+    ///   - avgPi: 平均灌注指数
+    ///   - spo2LowerBound: 血氧值下限
+    ///   - spo2UpperBound: 血氧值上限
+    ///   - bpmLowerBound: 心率值下限
+    ///   - bpmUpperBound: 心率值上限
+    ///   - piLowerBound: 灌注指数下限
+    ///   - piUpperBound: 灌注指数上限
     private func prepareOximeterReportAlert(
         avgSpO2: Int,
         avgBPM: Int,
