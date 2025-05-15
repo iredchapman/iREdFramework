@@ -604,7 +604,6 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         case .thermometer:
             peripheral.discoverServices(nil)
             iredDeviceData.thermometerData.data = .empty
-            iredDeviceData.thermometerData.state.isPaired = true
             iredDeviceData.thermometerData.state.isConnected = true
             iredDeviceData.thermometerData.state.isConnecting = false
         case .oximeter:

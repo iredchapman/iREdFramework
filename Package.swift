@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "iREdFramework",
-    platforms: [.iOS(.v16)],
+    platforms: [.iOS(.v16), .macOS(.v10_13)],
     products: [
         .library(
             name: "iREdFramework",
