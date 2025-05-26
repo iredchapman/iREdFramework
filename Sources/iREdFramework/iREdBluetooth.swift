@@ -544,7 +544,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             if deviceType == .scale && lastPairedScale != nil {
                 guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
                 centralManager.connect(per, options: nil)
-                iredDeviceData.oximeterData.state.isConnected = true
+                iredDeviceData.scaleData.state.isConnected = true
                 scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
             }
             // SportKit
