@@ -1201,7 +1201,7 @@ extension iREdBluetooth {
             }
             jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             switch mode {
             case .free:
                 self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
@@ -1220,6 +1220,7 @@ extension iREdBluetooth {
             }
             
             self.iredDeviceData.jumpRopeData.state.isMeasuring = true
+            
             Self.jumpRopeTimer?.invalidate()
             Self.jumpRopeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
                 Task { @MainActor in
