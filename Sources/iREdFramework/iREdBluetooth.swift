@@ -1201,7 +1201,7 @@ extension iREdBluetooth {
             }
             jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             switch mode {
             case .free:
                 self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
