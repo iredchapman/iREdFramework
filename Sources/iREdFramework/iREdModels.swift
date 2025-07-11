@@ -929,9 +929,12 @@ public struct RequestModel<T: Decodable>: Decodable {
 
 
 public extension Int {
-    /// 将时间戳（秒）转换为 `Date` 对象。
+    /// 将时间戳（秒）转换为香港时间（UTC+8）的 `Date` 对象。
     var timestampToDate: Date {
-        return Date(timeIntervalSince1970: TimeInterval(self))
+        // 原始 UTC 时间
+        let date = Date(timeIntervalSince1970: TimeInterval(self))
+        // 在时间点上 +8 小时（28800 秒）
+        return date.addingTimeInterval(8 * 60 * 60)
     }
 }
 
@@ -981,7 +984,7 @@ public struct PairedDeviceModel: Codable {
     
     /// 设备的 MAC 地址（可选，部分设备可读取）。
     public var macAddress: String?
-
+    
     /// 初始化方法。
     /// - Parameters:
     ///   - uuidString: 蓝牙设备 UUID 字符串。
@@ -992,7 +995,7 @@ public struct PairedDeviceModel: Codable {
         self.name = name
         self.macAddress = macAddress
     }
-
+    
     /// 从 `UserDefaults` 中解码并恢复 `PairedDeviceModel` 对象。
     ///
     /// 用于从本地持久化的数据中恢复配对设备信息。
