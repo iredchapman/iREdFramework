@@ -537,16 +537,24 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         case .scale:
             let (uuidString, deviceName, macAddress) = scaleService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
             if uuidString.isEmpty { return }
-            iredDeviceData.scaleData.state.isPairing = false
-            iredDeviceData.scaleData.state.isPaired = true
-            iredDeviceData.scaleData.data.peripheralName = name
-            lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
-            if deviceType == .scale && lastPairedScale != nil {
+            if iredDeviceData.scaleData.state.isPaired {
                 guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
                 centralManager.connect(per, options: nil)
                 iredDeviceData.scaleData.state.isConnected = true
                 scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
+            } else {
+                iredDeviceData.scaleData.state.isPairing = false
+                iredDeviceData.scaleData.state.isPaired = true
+                iredDeviceData.scaleData.data.peripheralName = name
+                lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
             }
+//            if deviceType == .scale && lastPairedScale != nil {
+//                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+//                centralManager.connect(per, options: nil)
+//                iredDeviceData.scaleData.state.isConnected = true
+//                scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
+//            }
+            
             // SportKit
         case .jumpRope:
             let (uuidString, deviceName, macAddress) = jumpRopeService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
