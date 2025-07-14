@@ -536,13 +536,17 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             stopPairing()
         case .scale:
             let (uuidString, deviceName, macAddress) = scaleService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
-            if uuidString.isEmpty { return }
+            if uuidString.isEmpty {
+                print("配对，uuidString是空的")
+                return }
             if iredDeviceData.scaleData.state.isPaired {
+                print("配对了，尝试连接")
                 guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
                 centralManager.connect(per, options: nil)
                 iredDeviceData.scaleData.state.isConnected = true
                 scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
             } else {
+                print("配对配对配对")
                 iredDeviceData.scaleData.state.isPairing = false
                 iredDeviceData.scaleData.state.isPaired = true
                 iredDeviceData.scaleData.data.peripheralName = name
