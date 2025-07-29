@@ -1195,6 +1195,7 @@ extension iREdBluetooth {
     public func startJumpRopeRecording(_ mode: SetJumpRopeMode, completion: @escaping (Result<Void, Error>) -> Void) {
         iredDeviceData.jumpRopeData.data.countArray = []
         iredDeviceData.jumpRopeData.data.count = 0
+        iredDeviceData.jumpRopeData.data.time = 0
         iredDeviceData.jumpRopeData.state.isMeasurementCompleted = false
         guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
         switch mode {
