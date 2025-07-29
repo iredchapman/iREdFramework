@@ -1202,16 +1202,16 @@ extension iREdBluetooth {
         case .free:
             jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
         case .time(let seconds):
-//            if seconds < 0 {
-//                completion(.failure(JumpRopeError.invalidTime))
-//                return
-//            }
+            if seconds < 0 {
+                completion(.failure(JumpRopeError.invalidTime))
+                return
+            }
             jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 1, setting: seconds)
         case .count(let count):
-//            if count < 0 {
-//                completion(.failure(JumpRopeError.invalidCount))
-//                return
-//            }
+            if count < 0 {
+                completion(.failure(JumpRopeError.invalidCount))
+                return
+            }
             jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -1219,16 +1219,16 @@ extension iREdBluetooth {
             case .free:
                 self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
             case .time(let seconds):
-                if seconds < 0 {
-                    completion(.failure(JumpRopeError.invalidTime))
-                    return
-                }
+//                if seconds < 0 {
+//                    completion(.failure(JumpRopeError.invalidTime))
+//                    return
+//                }
                 self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 1, setting: seconds)
             case .count(let count):
-                if count < 0 {
-                    completion(.failure(JumpRopeError.invalidCount))
-                    return
-                }
+//                if count < 0 {
+//                    completion(.failure(JumpRopeError.invalidCount))
+//                    return
+//                }
                 self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
             }
             
