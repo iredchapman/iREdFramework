@@ -1198,6 +1198,7 @@ extension iREdBluetooth {
         iredDeviceData.jumpRopeData.data.time = 0
         iredDeviceData.jumpRopeData.state.isMeasurementCompleted = false
         guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
+        jumpRopeService.stopCurrentMode(peripheral: jumpRopeDevice)
         switch mode {
         case .free:
             jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
