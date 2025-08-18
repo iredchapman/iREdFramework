@@ -182,7 +182,7 @@ let isPaired = scale.state.isPaired // 是否已配對
 let isPairing = scale.state.isPairing // 是否正在配對
 let isConnected = scale.state.isConnected // 當前是否已連接
 ```
-SwiftUI 監聽測量完成：當 `sphygmometer.state.isMeasurementCompleted` 變為 `true` 時（框架內部會在回調後短暫置為 true 再復位），可以在 `onChange` 中讀取數值並更新 UI。
+SwiftUI 監聽測量完成：當 `scale.state.isMeasurementCompleted` 變為 `true` 時（框架內部會在回調後短暫置為 true 再復位），可以在 `onChange` 中讀取數值並更新 UI。
 
 ### 跳繩數據（Jump Rope）
 
