@@ -15,16 +15,9 @@ import iREdFramework
 ```
 https://github.com/iredchapman/iREdFramework.git
 ```
+x
 
-------
 
-## 注意事项
-
-- 请确保在项目的 `Info.plist` 中添加蓝牙权限和后台运行权限：
-  - `NSBluetoothAlwaysUsageDescription`
-  - `NSBluetoothPeripheralUsageDescription`
-  - `UIBackgroundModes` 中包含 `bluetooth-central`
-- **AI建议**：在 `project.pbxproj` 中添加申请蓝牙和后台运行权限，以确保构建和运行稳定。
 
 ------
 
@@ -55,26 +48,36 @@ https://github.com/iredchapman/iREdFramework.git
 ### 启动配对
 
 ```swift
-ble.startPairing(to: .thermometer) // 以体温计为例
+ble.startPairing(to: .thermometer) // 开始配对温度计
 ```
 
 ### 停止配对
 
 ```swift
-ble.stopPairing()
+ble.stopPairing() // 停止配对
 ```
 
 ### 连接设备（自动查找上次配对设备）
 
 ```swift
-ble.connect(from: .thermometer)
+ble.connect(from: .thermometer) // 连接温度计
 ```
 
 ### 断开设备
 
 ```swift
-ble.disconnect(from: .thermometer)
+ble.disconnect(from: .thermometer) // 断开连接温度计
 ```
+### 设置 RSSI 过滤（如 -60）
+
+```swift
+ble.setRSSI(limit: -60)
+```
+
+**RSSI 说明：**  
+RSSI（Received Signal Strength Indicator，接收信号强度指示）是用来衡量蓝牙信号强弱的数值，单位通常是 dBm。  
+数值越接近 0，表示信号越强；数值越小（如 -90），表示信号越弱。  
+例如设置 RSSI 限制为 -60，表示只会连接信号强于 -60 dBm 的设备，可以避免连接过远或信号不稳定的设备。
 
 ------
 
@@ -84,61 +87,72 @@ ble.disconnect(from: .thermometer)
 
 ```swift
 let thermometer = ble.iredDeviceData.thermometerData
-let temperature = thermometer.data.temperature
-let mode = thermometer.data.modeDescription
-let battery = thermometer.data.battery
-let isMeasuring = thermometer.state.isMeasuring
-let isConnected = thermometer.state.isConnected
+let temperature = thermometer.data.temperature // 温度
+let mode = thermometer.data.modeDescription // 模式
+let battery = thermometer.data.battery // 电池电量
+let isPairing = thermometer.state.isPairing // 是否正在配对
+let isConnected = thermometer.state.isConnected // 当前是否已连接
+let isDisconnected = thermometer.state.isDisconnected // 是否已断开
 ```
 
 ### 血氧仪数据（Oximeter）
 
 ```swift
 let oximeter = ble.iredDeviceData.oximeterData
-let spo2 = oximeter.data.spo2
-let pulse = oximeter.data.pulse
-let pi = oximeter.data.pi
-let battery = oximeter.data.battery
-let isMeasuring = oximeter.state.isMeasuring
+let spo2 = oximeter.data.spo2 // 血氧
+let pulse = oximeter.data.pulse // 脉搏
+let pi = oximeter.data.pi // 灌注指数
+let battery = oximeter.data.battery // 电池电量
+let isPairing = oximeter.state.isPairing // 是否正在配对
+let isConnected = oximeter.state.isConnected // 当前是否已连接
+let isDisconnected = oximeter.state.isDisconnected // 是否已断开
 ```
 
 ### 血压计数据（Sphygmometer）
 
 ```swift
 let sphygmometer = ble.iredDeviceData.sphygmometerData
-let systolic = sphygmometer.data.systolic
-let diastolic = sphygmometer.data.diastolic
-let pulse = sphygmometer.data.pulse
-let isMeasuring = sphygmometer.state.isMeasuring
+let systolic = sphygmometer.data.systolic // 收缩压
+let diastolic = sphygmometer.data.diastolic // 舒张压
+let pulse = sphygmometer.data.pulse // 脉搏
+let isPairing = sphygmometer.state.isPairing // 是否正在配对
+let isConnected = sphygmometer.state.isConnected // 当前是否已连接
+let isDisconnected = sphygmometer.state.isDisconnected // 是否已断开
 ```
 
 ### 体重秤数据（Scale）
 
 ```swift
 let scale = ble.iredDeviceData.scaleData
-let weight = scale.data.weight
-let isFinalResult = scale.data.isFinalResult
-let isMeasuring = scale.state.isMeasuring
+let weight = scale.data.weight // 体重
+let isFinalResult = scale.data.isFinalResult // 是否最终结果
+let isPairing = scale.state.isPairing // 是否正在配对
+let isConnected = scale.state.isConnected // 当前是否已连接
+let isDisconnected = scale.state.isDisconnected // 是否已断开
 ```
 
 ### 跳绳数据（Jump Rope）
 
 ```swift
 let rope = ble.iredDeviceData.jumpRopeData
-let count = rope.data.count
-let time = rope.data.time
-let mode = rope.data.mode
-let battery = rope.data.batteryLevel
-let isMeasuring = rope.state.isMeasuring
+let count = rope.data.count // 跳绳次数
+let time = rope.data.time // 跳绳时长
+let mode = rope.data.mode // 跳绳模式
+let battery = rope.data.batteryLevel // 电池电量
+let isPairing = rope.state.isPairing // 是否正在配对
+let isConnected = rope.state.isConnected // 当前是否已连接
+let isDisconnected = rope.state.isDisconnected // 是否已断开
 ```
 
 ### 心率带数据（Heart Rate Belt）
 
 ```swift
 let heartRate = ble.iredDeviceData.heartRateData
-let heartrate = heartRate.data.heartrate
-let battery = heartRate.data.batteryPercentage
-let isMeasuring = heartRate.state.isMeasuring
+let heartrate = heartRate.data.heartrate // 心率
+let battery = heartRate.data.batteryPercentage // 电池电量
+let isPairing = heartRate.state.isPairing // 是否正在配对
+let isConnected = heartRate.state.isConnected // 当前是否已连接
+let isDisconnected = heartRate.state.isDisconnected // 是否已断开
 ```
 
 ------
@@ -153,27 +167,19 @@ ble.startJumpRopeRecording(.free) { result in
     case .success(): print("开始跳绳记录")
     case .failure(let err): print(err.localizedDescription)
     }
-}
+} // 自由跳绳
+
+ble.startJumpRopeRecording(.time(second: 10)) {...} // 设定跳绳时间10秒为目标
+ble.startJumpRopeRecording(.count(count: 10)) {...} // 设定跳绳数量10个为目标
 
 ble.stopJumpRopeRecording()
-```
-
-### 心率记录
-
-```swift
-ble.startHeartRateRecording()
-ble.stopHeartRateRecording()
 ```
 
 ------
 
 ## 5. 自定义功能
 
-### 设置 RSSI 过滤（如 -60）
 
-```swift
-ble.setRSSI(limit: -60)
-```
 
 ### 读取跳绳记录历史
 
@@ -193,4 +199,3 @@ let duration = ble.iredDeviceData.heartRateData.data.recordedSeconds()
 ```
 
 ------
-
