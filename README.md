@@ -138,7 +138,7 @@ ble.disconnect(from: .thermometer) // 斷開連接溫度計
 let thermometer = ble.iredDeviceData.thermometerData
 let temperature = thermometer.data.temperature // 溫度(℃)
 let mode = thermometer.data.modeDescription // 模式("Adult Forehead"、"Child Forehead"、"Ear Canal"、"Object")
-let battery = thermometer.data.battery // 電池電量
+let battery = thermometer.data.battery // 電池電量： 滿電：0xA0, >=80%：0x80，>=50%：0x50，<=10%：0x10
 let isPaired = thermometer.state.isPaired // 是否已配對
 let isPairing = thermometer.state.isPairing // 是否正在配對
 let isConnected = thermometer.state.isConnected // 當前是否已連接
@@ -152,7 +152,7 @@ let oximeter = ble.iredDeviceData.oximeterData
 let spo2 = oximeter.data.spo2 // 血氧
 let pulse = oximeter.data.pulse // 脈搏
 let pi = oximeter.data.pi // 灌注指數
-let battery = oximeter.data.battery // 電池電量
+let battery = oximeter.data.battery // 電池電量 0-100
 let isPaired = oximeter.state.isPaired // 是否已配對
 let isPairing = oximeter.state.isPairing // 是否正在配對
 let isConnected = oximeter.state.isConnected // 當前是否已連接
@@ -162,7 +162,7 @@ let isConnected = oximeter.state.isConnected // 當前是否已連接
 
 ```swift
 let sphygmometer = ble.iredDeviceData.sphygmometerData
-let pressure = sphygmometerData.data.pressure // 壓力
+let pressure = sphygmometerData.data.pressure // 量度時的壓力(mmHg)
 let systolic = sphygmometer.data.systolic // 收縮壓
 let diastolic = sphygmometer.data.diastolic // 舒張壓
 let pulse = sphygmometer.data.pulse // 脈搏
@@ -202,7 +202,7 @@ let isConnected = rope.state.isConnected // 當前是否已連接
 ```swift
 let heartRate = ble.iredDeviceData.heartRateData
 let heartrate = heartRate.data.heartrate // 心率
-let battery = heartRate.data.batteryPercentage // 電池電量
+let battery = heartRate.data.batteryPercentage // 電池電量(%)
 let isPaired = heartRate.state.isPaired // 是否已配對
 let isPairing = heartRate.state.isPairing // 是否正在配對
 let isConnected = heartRate.state.isConnected // 當前是否已連接
