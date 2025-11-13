@@ -890,9 +890,6 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
                 self.iredDeviceData.thermometerData = thermometerData
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.iredDeviceData.thermometerData.state.isMeasurementCompleted = false
-        }
     }
     
     /// - Parameters:
