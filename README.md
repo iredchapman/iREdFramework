@@ -136,9 +136,9 @@ ble.disconnect(from: .thermometer) // 斷開連接溫度計
 
 ```swift
 let thermometer = ble.iredDeviceData.thermometerData
-let temperature = thermometer.data.temperature // 溫度(℃)
-let mode = thermometer.data.modeDescription // 模式("Adult Forehead"、"Child Forehead"、"Ear Canal"、"Object")
-let battery = thermometer.data.battery // 電池電量： 滿電：0xA0, >=80%：0x80，>=50%：0x50，<=10%：0x10
+let temperature = thermometer.data.temperature // Double? 溫度(℃)
+let mode = thermometer.data.modeDescription // String? 模式("Adult Forehead"、"Child Forehead"、"Ear Canal"、"Object")
+let battery = thermometer.data.battery // String? 電池電量： 滿電：0xA0, >=80%：0x80，>=50%：0x50，<=10%：0x10
 let isPaired = thermometer.state.isPaired // 是否已配對
 let isPairing = thermometer.state.isPairing // 是否正在配對
 let isConnected = thermometer.state.isConnected // 當前是否已連接
@@ -149,10 +149,10 @@ SwiftUI 監聽測量完成：當 `thermometer.state.isMeasurementCompleted` 變�
 
 ```swift
 let oximeter = ble.iredDeviceData.oximeterData
-let spo2 = oximeter.data.spo2 // 血氧
-let pulse = oximeter.data.pulse // 脈搏
-let pi = oximeter.data.pi // 灌注指數
-let battery = oximeter.data.battery // 電池電量 0-100
+let spo2 = oximeter.data.spo2 // Int? 血氧
+let pulse = oximeter.data.pulse // Int? 脈搏
+let pi = oximeter.data.pi // Double? 灌注指數
+let battery = oximeter.data.battery // Int? 電池電量 0-100
 let isPaired = oximeter.state.isPaired // 是否已配對
 let isPairing = oximeter.state.isPairing // 是否正在配對
 let isConnected = oximeter.state.isConnected // 當前是否已連接
@@ -162,10 +162,10 @@ let isConnected = oximeter.state.isConnected // 當前是否已連接
 
 ```swift
 let sphygmometer = ble.iredDeviceData.sphygmometerData
-let pressure = sphygmometerData.data.pressure // 量度時的壓力(mmHg)
-let systolic = sphygmometer.data.systolic // 收縮壓
-let diastolic = sphygmometer.data.diastolic // 舒張壓
-let pulse = sphygmometer.data.pulse // 脈搏
+let pressure = sphygmometer.data.pressure // Int? 量度時的壓力(mmHg)
+let systolic = sphygmometer.data.systolic // Int? 收縮壓
+let diastolic = sphygmometer.data.diastolic // Int? 舒張壓
+let pulse = sphygmometer.data.pulse // Int? 脈搏
 let isPaired = sphygmometer.state.isPaired // 是否已配對
 let isPairing = sphygmometer.state.isPairing // 是否正在配對
 let isConnected = sphygmometer.state.isConnected // 當前是否已連接
@@ -176,8 +176,8 @@ SwiftUI 監聽測量完成：當 `sphygmometer.state.isMeasurementCompleted` 變
 
 ```swift
 let scale = ble.iredDeviceData.scaleData
-let weight = scale.data.weight // 體重(kg)
-let isFinalResult = scale.data.isFinalResult // 是否最終結果
+let weight = scale.data.weight // Double? 體重(kg)
+let isFinalResult = scale.data.isFinalResult // Bool? 是否最終結果
 let isPaired = scale.state.isPaired // 是否已配對
 let isPairing = scale.state.isPairing // 是否正在配對
 let isConnected = scale.state.isConnected // 當前是否已連接
@@ -188,10 +188,10 @@ SwiftUI 監聽測量完成：當 `scale.state.isMeasurementCompleted` 變為 `tr
 
 ```swift
 let rope = ble.iredDeviceData.jumpRopeData
-let count = rope.data.count // 跳繩次數
-let time = rope.data.time // 跳繩時長(秒)
-let mode = rope.data.mode // 跳繩模式(0 = 自由跳, 1 = 計時跳, 2 = 計數跳)
-let battery = rope.data.batteryLevel // 電池電量（等級：4 >80%，3 >50%，2 >25%，1 >10%，0 ≤10%）
+let count = rope.data.count // Int? 跳繩次數
+let time = rope.data.time // Int? 跳繩時長(秒)
+let mode = rope.data.mode // Int? 跳繩模式(0 = 自由跳, 1 = 計時跳, 2 = 計數跳)
+let battery = rope.data.batteryLevel // Int? 電池電量（等級：4 >80%，3 >50%，2 >25%，1 >10%，0 ≤10%）
 let isPaired = rope.state.isPaired // 是否已配對
 let isPairing = rope.state.isPairing // 是否正在配對
 let isConnected = rope.state.isConnected // 當前是否已連接
@@ -201,8 +201,8 @@ let isConnected = rope.state.isConnected // 當前是否已連接
 
 ```swift
 let heartRate = ble.iredDeviceData.heartRateData
-let heartrate = heartRate.data.heartrate // 心率
-let battery = heartRate.data.batteryPercentage // 電池電量(%)
+let heartrate = heartRate.data.heartrate // Int? 心率
+let battery = heartRate.data.batteryPercentage // Int? 電池電量(%)
 let isPaired = heartRate.state.isPaired // 是否已配對
 let isPairing = heartRate.state.isPairing // 是否正在配對
 let isConnected = heartRate.state.isConnected // 當前是否已連接

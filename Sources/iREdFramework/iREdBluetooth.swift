@@ -1081,6 +1081,8 @@ extension iREdBluetooth: @preconcurrency BloodPressureMonitorServiceDelegate {
         iredDeviceData.sphygmometerData.data.pulse = pulse
         iredDeviceData.sphygmometerData.data.irregularPulse = irregularPulse
         iredDeviceData.sphygmometerData.state.isMeasurementCompleted = true
+        iredDeviceData.sphygmometerData.state.isMeasuring = false
+
     }
 }
 
