@@ -931,7 +931,7 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
         var thermometerData = iredDeviceData.thermometerData
         thermometerData.state.isConnected = true
         thermometerData.state.isMeasurementCompleted = true
-        let data = HealthKitThermometerModel(battery: iredDeviceData.thermometerData.data.battery, temperature: temperature, modeCode: mode, modeDescription: modeString)
+        let data = HealthKitThermometerModel(peripheralName: thermometerData.data.peripheralName, macAddress: thermometerData.data.macAddress, battery: iredDeviceData.thermometerData.data.battery, temperature: temperature, modeCode: mode, modeDescription: modeString)
         thermometerData.data = data
         Task {
             await MainActor.run {
@@ -953,7 +953,11 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
     ///   - description: Battery description
     @MainActor public func thermometerBatteryLevelCallback(type: Int, description: String) {
         hkDelegate?.thermometerCallback(callback: .battery(type: type, description: description))
+        let peripheralName = iredDeviceData.thermometerData.data.peripheralName
+        let macAddress = iredDeviceData.thermometerData.data.macAddress
         iredDeviceData.thermometerData.data = .empty
+        iredDeviceData.thermometerData.data.peripheralName = peripheralName
+        iredDeviceData.thermometerData.data.macAddress = macAddress
         iredDeviceData.thermometerData.state.isConnected = true
         iredDeviceData.thermometerData.data.battery = description
     }

@@ -136,8 +136,8 @@ ble.disconnect(from: .thermometer) // 斷開連接溫度計
 
 ```swift
 let thermometer = ble.iredDeviceData.thermometerData
-let peripheralName = thermometer.peripheralName // peripheral name
-let macAddress = thermometer.macAddress // MAC address
+let peripheralName = thermometer.data.peripheralName // peripheral name
+let macAddress = thermometer.data.macAddress // MAC address
 let temperature = thermometer.data.temperature // Double? 溫度(℃)
 let mode = thermometer.data.modeDescription // String? 模式("Adult Forehead"、"Child Forehead"、"Ear Canal"、"Object")
 let battery = thermometer.data.battery // String? 電池電量： 滿電：0xA0, >=80%：0x80，>=50%：0x50，<=10%：0x10
@@ -151,8 +151,8 @@ SwiftUI 監聽測量完成：當 `thermometer.state.isMeasurementCompleted` 變�
 
 ```swift
 let oximeter = ble.iredDeviceData.oximeterData
-let peripheralName = oximeter.peripheralName // peripheral name
-let macAddress = oximeter.macAddress // MAC address
+let peripheralName = oximeter.data.peripheralName // peripheral name
+let macAddress = oximeter.data.macAddress // MAC address
 let spo2 = oximeter.data.spo2 // Int? 血氧
 let pulse = oximeter.data.pulse // Int? 脈搏
 let pi = oximeter.data.pi // Double? 灌注指數
@@ -166,8 +166,8 @@ let isConnected = oximeter.state.isConnected // 當前是否已連接
 
 ```swift
 let sphygmometer = ble.iredDeviceData.sphygmometerData
-let peripheralName = sphygmometer.peripheralName // peripheral name
-let macAddress = sphygmometer.macAddress // MAC address
+let peripheralName = sphygmometer.data.peripheralName // peripheral name
+let macAddress = sphygmometer.data.macAddress // MAC address
 let pressure = sphygmometer.data.pressure // Int? 量度時的壓力(mmHg)
 let systolic = sphygmometer.data.systolic // Int? 收縮壓
 let diastolic = sphygmometer.data.diastolic // Int? 舒張壓
@@ -182,8 +182,8 @@ SwiftUI 監聽測量完成：當 `sphygmometer.state.isMeasurementCompleted` 變
 
 ```swift
 let scale = ble.iredDeviceData.scaleData
-let peripheralName = scale.peripheralName // peripheral name
-let macAddress = scale.macAddress // MAC address
+let peripheralName = scale.data.peripheralName // peripheral name
+let macAddress = scale.data.macAddress // MAC address
 let weight = scale.data.weight // Double? 體重(kg)
 let isFinalResult = scale.data.isFinalResult // Bool? 是否最終結果
 let isPaired = scale.state.isPaired // 是否已配對
@@ -196,8 +196,8 @@ SwiftUI 監聽測量完成：當 `scale.state.isMeasurementCompleted` 變為 `tr
 
 ```swift
 let rope = ble.iredDeviceData.jumpRopeData
-let peripheralName = rope.peripheralName // peripheral name
-let macAddress = rope.macAddress // MAC address
+let peripheralName = rope.data.peripheralName // peripheral name
+let macAddress = rope.data.macAddress // MAC address
 let count = rope.data.count // Int? 跳繩次數
 let time = rope.data.time // Int? 跳繩時長(秒)
 let mode = rope.data.mode // Int? 跳繩模式(0 = 自由跳, 1 = 計時跳, 2 = 計數跳)
@@ -211,8 +211,8 @@ let isConnected = rope.state.isConnected // 當前是否已連接
 
 ```swift
 let heartRate = ble.iredDeviceData.heartRateData
-let peripheralName = heartRate.peripheralName // peripheral name
-let macAddress = heartRate.macAddress // MAC address
+let peripheralName = heartRate.data.peripheralName // peripheral name
+let macAddress = heartRate.data.macAddress // MAC address
 let heartrate = heartRate.data.heartrate // Int? 心率
 let battery = heartRate.data.batteryPercentage // Int? 電池電量(%)
 let isPaired = heartRate.state.isPaired // 是否已配對
