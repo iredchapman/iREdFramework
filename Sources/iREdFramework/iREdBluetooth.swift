@@ -186,27 +186,51 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         debugPrint("正在配对: ", deviceType.rawValue)
         switch deviceType {
         case .thermometer:
-            iredDeviceData.thermometerData = .empty
+            let peripheralName = iredDeviceData.thermometerData.data.peripheralName
+            let macAddress = iredDeviceData.thermometerData.data.macAddress
+            iredDeviceData.thermometerData.data = .empty
+            iredDeviceData.thermometerData.data.peripheralName = peripheralName
+            iredDeviceData.thermometerData.data.macAddress = macAddress
             iredDeviceData.thermometerData.state.isPairing = true
             lastPairedThermometer = nil
         case .oximeter:
-            iredDeviceData.oximeterData = .empty
+            let peripheralName = iredDeviceData.oximeterData.data.peripheralName
+            let macAddress = iredDeviceData.oximeterData.data.macAddress
+            iredDeviceData.oximeterData.data = .empty
+            iredDeviceData.oximeterData.data.peripheralName = peripheralName
+            iredDeviceData.oximeterData.data.macAddress = macAddress
             iredDeviceData.oximeterData.state.isPairing = true
             lastPairedOximeter = nil
         case .sphygmometer:
-            iredDeviceData.sphygmometerData = .empty
+            let peripheralName = iredDeviceData.sphygmometerData.data.peripheralName
+            let macAddress = iredDeviceData.sphygmometerData.data.macAddress
+            iredDeviceData.sphygmometerData.data = .empty
+            iredDeviceData.sphygmometerData.data.peripheralName = peripheralName
+            iredDeviceData.sphygmometerData.data.macAddress = macAddress
             iredDeviceData.sphygmometerData.state.isPairing = true
             lastPairedSphygmometer = nil
         case .jumpRope:
-            iredDeviceData.jumpRopeData = .empty
+            let peripheralName = iredDeviceData.jumpRopeData.data.peripheralName
+            let macAddress = iredDeviceData.jumpRopeData.data.macAddress
+            iredDeviceData.jumpRopeData.data = .empty
+            iredDeviceData.jumpRopeData.data.peripheralName = peripheralName
+            iredDeviceData.jumpRopeData.data.macAddress = macAddress
             iredDeviceData.jumpRopeData.state.isPairing = true
             lastPairedJumpRope = nil
         case .heartRateBelt:
-            iredDeviceData.heartRateData = .empty
+            let peripheralName = iredDeviceData.heartRateData.data.peripheralName
+            let macAddress = iredDeviceData.heartRateData.data.macAddress
+            iredDeviceData.heartRateData.data = .empty
+            iredDeviceData.heartRateData.data.peripheralName = peripheralName
+            iredDeviceData.heartRateData.data.macAddress = macAddress
             iredDeviceData.heartRateData.state.isPairing = true
             lastPairedHeartRate = nil
         case .scale:
-            iredDeviceData.scaleData = .empty
+            let peripheralName = iredDeviceData.scaleData.data.peripheralName
+            let macAddress = iredDeviceData.scaleData.data.macAddress
+            iredDeviceData.scaleData.data = .empty
+            iredDeviceData.scaleData.data.peripheralName = peripheralName
+            iredDeviceData.scaleData.data.macAddress = macAddress
             iredDeviceData.scaleData.state.isPairing = true
             lastPairedScale = nil
         default:
@@ -552,12 +576,12 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.scaleData.data.peripheralName = name
                 lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
             }
-//            if deviceType == .scale && lastPairedScale != nil {
-//                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
-//                centralManager.connect(per, options: nil)
-//                iredDeviceData.scaleData.state.isConnected = true
-//                scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
-//            }
+            //            if deviceType == .scale && lastPairedScale != nil {
+            //                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
+            //                centralManager.connect(per, options: nil)
+            //                iredDeviceData.scaleData.state.isConnected = true
+            //                scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
+            //            }
             
             // SportKit
         case .jumpRope:
@@ -615,27 +639,47 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         switch deviceType {
         case .thermometer:
             peripheral.discoverServices(nil)
+            let peripheralName = iredDeviceData.thermometerData.data.peripheralName
+            let macAddress = iredDeviceData.thermometerData.data.macAddress
             iredDeviceData.thermometerData.data = .empty
+            iredDeviceData.thermometerData.data.peripheralName = peripheralName
+            iredDeviceData.thermometerData.data.macAddress = macAddress
             iredDeviceData.thermometerData.state.isConnected = true
             iredDeviceData.thermometerData.state.isConnecting = false
         case .oximeter:
             peripheral.discoverServices(nil)
+            let peripheralName = iredDeviceData.oximeterData.data.peripheralName
+            let macAddress = iredDeviceData.oximeterData.data.macAddress
             iredDeviceData.oximeterData.data = .empty
+            iredDeviceData.oximeterData.data.peripheralName = peripheralName
+            iredDeviceData.oximeterData.data.macAddress = macAddress
             iredDeviceData.oximeterData.state.isConnected = true
             iredDeviceData.oximeterData.state.isConnecting = false
         case .sphygmometer:
             peripheral.discoverServices(nil)
+            let peripheralName = iredDeviceData.sphygmometerData.data.peripheralName
+            let macAddress = iredDeviceData.sphygmometerData.data.macAddress
             iredDeviceData.sphygmometerData.data = .empty
+            iredDeviceData.sphygmometerData.data.peripheralName = peripheralName
+            iredDeviceData.sphygmometerData.data.macAddress = macAddress
             iredDeviceData.sphygmometerData.state.isConnected = true
             iredDeviceData.sphygmometerData.state.isConnecting = false
         case .scale:
             peripheral.discoverServices(nil)
+            let peripheralName = iredDeviceData.scaleData.data.peripheralName
+            let macAddress = iredDeviceData.scaleData.data.macAddress
             iredDeviceData.scaleData.data = .empty
+            iredDeviceData.scaleData.data.peripheralName = peripheralName
+            iredDeviceData.scaleData.data.macAddress = macAddress
             iredDeviceData.scaleData.state.isConnected = true
             iredDeviceData.scaleData.state.isConnecting = false
         case .jumpRope:
             peripheral.discoverServices([JumpRopeService.JumpRopeServiceUUID])
+            let peripheralName = iredDeviceData.jumpRopeData.data.peripheralName
+            let macAddress = iredDeviceData.jumpRopeData.data.macAddress
             iredDeviceData.jumpRopeData.data = .empty
+            iredDeviceData.jumpRopeData.data.peripheralName = peripheralName
+            iredDeviceData.jumpRopeData.data.macAddress = macAddress
             iredDeviceData.jumpRopeData.state.isConnected = true
             iredDeviceData.jumpRopeData.state.isConnecting = false
             /// print("jump rope connected...")
@@ -644,7 +688,11 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 HeartrateProfile.HeartrateServiceUUID,
                 HeartrateProfile.BatteryServiceUUID,
             ])
+            let peripheralName = iredDeviceData.heartRateData.data.peripheralName
+            let macAddress = iredDeviceData.heartRateData.data.macAddress
             iredDeviceData.heartRateData.data = .empty
+            iredDeviceData.heartRateData.data.peripheralName = peripheralName
+            iredDeviceData.heartRateData.data.macAddress = macAddress
             iredDeviceData.heartRateData.state.isConnected = true
             iredDeviceData.heartRateData.state.isConnecting = false
         default:
@@ -1082,7 +1130,7 @@ extension iREdBluetooth: @preconcurrency BloodPressureMonitorServiceDelegate {
         iredDeviceData.sphygmometerData.data.irregularPulse = irregularPulse
         iredDeviceData.sphygmometerData.state.isMeasurementCompleted = true
         iredDeviceData.sphygmometerData.state.isMeasuring = false
-
+        
     }
 }
 
