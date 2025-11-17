@@ -912,6 +912,7 @@ extension iREdBluetooth: @preconcurrency SportKitFramework.ScaleServiceDelegate 
             scaleState.isMeasurementCompleted = false
         }
         DispatchQueue.main.async {
+            self.iredDeviceData.scaleData.data.isFinalResult = isFinalResult
             self.iredDeviceData.scaleData.data.weight = weight
             self.iredDeviceData.scaleData.state = scaleState
         }
