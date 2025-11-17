@@ -183,7 +183,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     /// await bleManager.startPairing(to: .oximeter)
     /// ```
     @MainActor public func startPairing(to deviceType: iREdBluetoothDeviceType) {
-        debugPrint("正在配对: ", deviceType.rawValue)
+        // debugPrint("正在配对: ", deviceType.rawValue)
         switch deviceType {
         case .thermometer:
             let peripheralName = iredDeviceData.thermometerData.data.peripheralName
@@ -274,7 +274,7 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
         iredDeviceData.scaleData.state.isMeasuring = false
         iredDeviceData.scaleData.state.isMeasurementCompleted = false
         centralManager.stopScan()
-        debugPrint("stop pairing")
+        // debugPrint("stop pairing")
     }
     
     /// 根据指定设备类型发起蓝牙连接请求（仅连接已配对设备）
@@ -500,7 +500,7 @@ extension iREdBluetooth: @preconcurrency CBCentralManagerDelegate {
     }
     
     private func addDevice(_ device: iRedDevice) {
-        debugPrint("添加设备", device.name)
+        // debugPrint("添加设备", device.name)
         devices.appendUnique(device)
     }
 }
@@ -561,16 +561,16 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
         case .scale:
             let (uuidString, deviceName, macAddress) = scaleService.setPairedDevice(peripheral: peripheral, advertisementData: advertisementData)
             if uuidString.isEmpty {
-                print("配对，uuidString是空的")
+                // print("配对，uuidString是空的")
                 return }
             if iredDeviceData.scaleData.state.isPaired {
-                print("配对了，尝试连接")
+                // print("配对了，尝试连接")
                 guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
                 centralManager.connect(per, options: nil)
                 iredDeviceData.scaleData.state.isConnected = true
                 scaleService.parseWeightData(peripheral: peripheral, advertisementData: advertisementData)
             } else {
-                print("配对配对配对")
+                // print("配对配对配对")
                 iredDeviceData.scaleData.state.isPairing = false
                 iredDeviceData.scaleData.state.isPaired = true
                 iredDeviceData.scaleData.data.peripheralName = name
