@@ -186,6 +186,8 @@ let peripheralName = scale.data.peripheralName // peripheral name
 let macAddress = scale.data.macAddress // MAC address
 let weight = scale.data.weight // Double? 體重(kg)
 let isFinalResult = scale.data.isFinalResult // Bool? 是否最終結果
+let bmi = scale.data.toBMI(height: Int, weight: Double) // Double 傳遞體重和身高，返回bmi
+let body_fat = scale.data.toBodyFat(height: Int, age: Int, gender: String) // Double 傳遞身高、年齡和性別(male/female)，返回body_fat
 let isPaired = scale.state.isPaired // 是否已配對
 let isPairing = scale.state.isPairing // 是否正在配對
 let isConnected = scale.state.isConnected // 當前是否已連接
@@ -202,9 +204,24 @@ let count = rope.data.count // Int? 跳繩次數
 let time = rope.data.time // Int? 跳繩時長(秒)
 let mode = rope.data.mode // Int? 跳繩模式(0 = 自由跳, 1 = 計時跳, 2 = 計數跳)
 let battery = rope.data.batteryLevel // Int? 電池電量（等級：4 >80%，3 >50%，2 >25%，1 >10%，0 ≤10%）
+let setting = rope.data.setting // Int? 用户设置的参数（如目标时间/计数等）
+let status = rope.data.status // Int? 当前状态（例如是否在跳跃中
 let isPaired = rope.state.isPaired // 是否已配對
 let isPairing = rope.state.isPairing // 是否正在配對
 let isConnected = rope.state.isConnected // 當前是否已連接
+
+// 跳繩支持三種模式：自由跳、計時跳、計數跳。可以發送指令
+ble.startJumpRopeRecording(.free) { result in
+    switch result {
+    case .success(): print("開始跳繩記錄")
+    case .failure(let err): print(err.localizedDescription)
+    }
+} // 自由跳繩
+
+ble.startJumpRopeRecording(.time(second: 10)) {...} // 設定跳繩時間10秒為目標
+ble.startJumpRopeRecording(.count(count: 10)) {...} // 設定跳繩數量10個為目標
+
+ble.stopJumpRopeRecording() // 停止跳繩記錄
 ```
 
 ### 心率帶數據（Heart Rate Belt）
@@ -222,23 +239,3 @@ let isConnected = heartRate.state.isConnected // 當前是否已連接
 
 ------
 
-## 4. 開始與停止記錄
-
-### 跳繩記錄
-跳繩支持三種模式：自由跳、計時跳、計數跳。可以發送指令
-
-```swift
-ble.startJumpRopeRecording(.free) { result in
-    switch result {
-    case .success(): print("開始跳繩記錄")
-    case .failure(let err): print(err.localizedDescription)
-    }
-} // 自由跳繩
-
-ble.startJumpRopeRecording(.time(second: 10)) {...} // 設定跳繩時間10秒為目標
-ble.startJumpRopeRecording(.count(count: 10)) {...} // 設定跳繩數量10個為目標
-
-ble.stopJumpRopeRecording() // 停止跳繩記錄
-```
-
-------
