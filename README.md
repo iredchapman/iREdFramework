@@ -203,7 +203,7 @@ let macAddress = rope.data.macAddress // MAC address
 let count = rope.data.count // Int? 跳繩次數
 let time = rope.data.time // Int? 跳繩時長(秒)
 let mode = rope.data.mode // Int? 跳繩模式(0 = 自由跳, 1 = 計時跳, 2 = 計數跳)
-let battery = rope.data.batteryLevel // Int? 電池電量（等級：4 >80%，3 >50%，2 >25%，1 >10%，0 ≤10%）
+let battery = rope.data.batteryLevel // Int? 電池電量等級（等級：4 >80%，3 >50%，2 >25%，1 >10%，0 ≤10%）需要轉換成百分比
 let setting = rope.data.setting // Int? 用户设置的参数（如目标时间/计数等）
 let status = rope.data.status // Int? 当前状态（例如是否在跳跃中
 let isPaired = rope.state.isPaired // 是否已配對

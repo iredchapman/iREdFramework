@@ -575,6 +575,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.scaleData.state.isPaired = true
                 iredDeviceData.scaleData.data.peripheralName = name
                 lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
+                stopPairing()
             }
             //            if deviceType == .scale && lastPairedScale != nil {
             //                guard let per = devices.filter({ $0.peripheral.identifier.uuidString == device.peripheral.identifier.uuidString }).first?.peripheral else { return }
