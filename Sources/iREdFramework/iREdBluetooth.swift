@@ -574,6 +574,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
                 iredDeviceData.scaleData.state.isPairing = false
                 iredDeviceData.scaleData.state.isPaired = true
                 iredDeviceData.scaleData.data.peripheralName = name
+                iredDeviceData.scaleData.data.lastUpdatedTime = Date()
                 lastPairedScale = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
                 stopPairing()
             }
@@ -610,6 +611,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.heartRateData.state.isPairing = false
             iredDeviceData.heartRateData.state.isPaired = true
             iredDeviceData.heartRateData.data.peripheralName = name
+            iredDeviceData.heartRateData.data.lastUpdatedTime = Date()
             lastPairedHeartRate = PairedDeviceModel(uuidString: uuid, name: deviceName, macAddress: macAddress)
             
             if let currentUUIDString, currentUUIDString == uuidString {
@@ -645,6 +647,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.thermometerData.data = .empty
             iredDeviceData.thermometerData.data.peripheralName = peripheralName
             iredDeviceData.thermometerData.data.macAddress = macAddress
+            iredDeviceData.thermometerData.data.lastUpdatedTime = Date()
             iredDeviceData.thermometerData.state.isConnected = true
             iredDeviceData.thermometerData.state.isConnecting = false
         case .oximeter:
@@ -654,6 +657,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.oximeterData.data = .empty
             iredDeviceData.oximeterData.data.peripheralName = peripheralName
             iredDeviceData.oximeterData.data.macAddress = macAddress
+            iredDeviceData.oximeterData.data.lastUpdatedTime = Date()
             iredDeviceData.oximeterData.state.isConnected = true
             iredDeviceData.oximeterData.state.isConnecting = false
         case .sphygmometer:
@@ -663,6 +667,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.sphygmometerData.data = .empty
             iredDeviceData.sphygmometerData.data.peripheralName = peripheralName
             iredDeviceData.sphygmometerData.data.macAddress = macAddress
+            iredDeviceData.sphygmometerData.data.lastUpdatedTime = Date()
             iredDeviceData.sphygmometerData.state.isConnected = true
             iredDeviceData.sphygmometerData.state.isConnecting = false
         case .scale:
@@ -672,6 +677,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.scaleData.data = .empty
             iredDeviceData.scaleData.data.peripheralName = peripheralName
             iredDeviceData.scaleData.data.macAddress = macAddress
+            iredDeviceData.scaleData.data.lastUpdatedTime = Date()
             iredDeviceData.scaleData.state.isConnected = true
             iredDeviceData.scaleData.state.isConnecting = false
         case .jumpRope:
@@ -681,6 +687,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.jumpRopeData.data = .empty
             iredDeviceData.jumpRopeData.data.peripheralName = peripheralName
             iredDeviceData.jumpRopeData.data.macAddress = macAddress
+            iredDeviceData.jumpRopeData.data.lastUpdatedTime = Date()
             iredDeviceData.jumpRopeData.state.isConnected = true
             iredDeviceData.jumpRopeData.state.isConnecting = false
             /// print("jump rope connected...")
@@ -694,6 +701,7 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             iredDeviceData.heartRateData.data = .empty
             iredDeviceData.heartRateData.data.peripheralName = peripheralName
             iredDeviceData.heartRateData.data.macAddress = macAddress
+            iredDeviceData.heartRateData.data.lastUpdatedTime = Date()
             iredDeviceData.heartRateData.state.isConnected = true
             iredDeviceData.heartRateData.state.isConnecting = false
         default:
@@ -915,6 +923,7 @@ extension iREdBluetooth: @preconcurrency SportKitFramework.ScaleServiceDelegate 
         DispatchQueue.main.async {
             self.iredDeviceData.scaleData.data.isFinalResult = isFinalResult
             self.iredDeviceData.scaleData.data.weight = weight
+            self.iredDeviceData.scaleData.data.lastUpdatedTime = Date()
             self.iredDeviceData.scaleData.state = scaleState
         }
         hkDelegate?.scaleCallback(callback: .weight(weight: weight, isFinalResult: isFinalResult))
@@ -933,7 +942,7 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
         var thermometerData = iredDeviceData.thermometerData
         thermometerData.state.isConnected = true
         thermometerData.state.isMeasurementCompleted = true
-        let data = HealthKitThermometerModel(peripheralName: thermometerData.data.peripheralName, macAddress: thermometerData.data.macAddress, battery: iredDeviceData.thermometerData.data.battery, temperature: temperature, modeCode: mode, modeDescription: modeString)
+        let data = HealthKitThermometerModel(peripheralName: thermometerData.data.peripheralName, macAddress: thermometerData.data.macAddress, battery: iredDeviceData.thermometerData.data.battery, temperature: temperature, modeCode: mode, modeDescription: modeString, lastUpdatedTime: Date())
         thermometerData.data = data
         Task {
             await MainActor.run {
@@ -947,6 +956,7 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
     ///   - description: Error description
     public func thermometerErrorCallback(error: Int, description: String) {
         hkDelegate?.thermometerCallback(callback: .error(error: error, description: description))
+        iredDeviceData.thermometerData.data.lastUpdatedTime = Date()
         iredDeviceData.thermometerData.state.isMeasurementError = MeasurementError(errorCode: error, errorDescription: description)
     }
     
@@ -960,6 +970,7 @@ extension iREdBluetooth: @preconcurrency ThermometerServiceDelegate {
         iredDeviceData.thermometerData.data = .empty
         iredDeviceData.thermometerData.data.peripheralName = peripheralName
         iredDeviceData.thermometerData.data.macAddress = macAddress
+        iredDeviceData.thermometerData.data.lastUpdatedTime = Date()
         iredDeviceData.thermometerData.state.isConnected = true
         iredDeviceData.thermometerData.data.battery = description
     }
@@ -979,6 +990,7 @@ extension iREdBluetooth: @preconcurrency OximeterServiceDelegate {
         iredDeviceData.oximeterData.data.battery = batteryPercentage
         iredDeviceData.oximeterData.data.pulsData = pulseData
         iredDeviceData.oximeterData.data.PlethysmographyArray += pulseData.map(Int.init)
+        iredDeviceData.oximeterData.data.lastUpdatedTime = Date()
     }
     
     /// 处理血氧仪测量数据的回调，包括脉搏、血氧饱和度和灌注指数。
@@ -1002,6 +1014,8 @@ extension iREdBluetooth: @preconcurrency OximeterServiceDelegate {
         iredDeviceData.oximeterData.data.SpO2Array.append(spo2)
         iredDeviceData.oximeterData.data.BPMArray.append(pulse)
         iredDeviceData.oximeterData.data.PIArray.append(pi)
+        
+        iredDeviceData.oximeterData.data.lastUpdatedTime = Date()
     }
 }
 extension iREdBluetooth {
@@ -1121,6 +1135,7 @@ extension iREdBluetooth: @preconcurrency BloodPressureMonitorServiceDelegate {
         hkDelegate?.sphygmometerCallback(callback: .instantData(pressure: pressure, pulseStatus: pulseStatus))
         iredDeviceData.sphygmometerData.data.pressure = pressure
         iredDeviceData.sphygmometerData.data.pulseStatus = pulseStatus
+        iredDeviceData.sphygmometerData.data.lastUpdatedTime = Date()
         iredDeviceData.sphygmometerData.state.isMeasurementCompleted = false
         iredDeviceData.sphygmometerData.state.isMeasuring = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -1134,6 +1149,7 @@ extension iREdBluetooth: @preconcurrency BloodPressureMonitorServiceDelegate {
         iredDeviceData.sphygmometerData.data.diastolic = diastolic
         iredDeviceData.sphygmometerData.data.pulse = pulse
         iredDeviceData.sphygmometerData.data.irregularPulse = irregularPulse
+        iredDeviceData.sphygmometerData.data.lastUpdatedTime = Date()
         iredDeviceData.sphygmometerData.state.isMeasurementCompleted = true
         iredDeviceData.sphygmometerData.state.isMeasuring = false
         
@@ -1150,6 +1166,7 @@ extension iREdBluetooth: @preconcurrency JumpRopeServiceDelegate {
         iredDeviceData.jumpRopeData.data.setting = setting
         iredDeviceData.jumpRopeData.data.screen = screen
         iredDeviceData.jumpRopeData.data.batteryLevel = battery
+        iredDeviceData.jumpRopeData.data.lastUpdatedTime = Date()
         var resultMode: JumpRopeMode = .free
         var resultStatus: JumpRopeState = .notJumpingRope
         switch mode {
@@ -1249,6 +1266,7 @@ extension iREdBluetooth {
         iredDeviceData.jumpRopeData.data.countArray = []
         iredDeviceData.jumpRopeData.data.count = 0
         iredDeviceData.jumpRopeData.data.time = 0
+        iredDeviceData.jumpRopeData.data.lastUpdatedTime = Date()
         iredDeviceData.jumpRopeData.state.isMeasurementCompleted = false
         guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
         jumpRopeService.stopCurrentMode(peripheral: jumpRopeDevice)
@@ -1324,17 +1342,74 @@ extension iREdBluetooth {
         }
         // print("停止时间是否成功", Self.jumpRopeTimer?.isValid)
     }
+    
+    public func setJumpRopeMode(_ mode: SetJumpRopeMode) {
+        iredDeviceData.jumpRopeData.data.countArray = []
+        iredDeviceData.jumpRopeData.data.count = 0
+        iredDeviceData.jumpRopeData.data.time = 0
+        iredDeviceData.jumpRopeData.data.lastUpdatedTime = Date()
+        iredDeviceData.jumpRopeData.state.isMeasurementCompleted = false
+        guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
+        jumpRopeService.stopCurrentMode(peripheral: jumpRopeDevice)
+        switch mode {
+        case .free:
+            jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
+        case .time(let seconds):
+            if seconds < 0 {
+                return
+            }
+            jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 1, setting: seconds)
+        case .count(let count):
+            if count < 0 {
+                return
+            }
+            jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            switch mode {
+            case .free:
+                self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 0, setting: 0)
+            case .time(let seconds):
+                if seconds < 0 {
+                    return
+                }
+                self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 1, setting: seconds)
+            case .count(let count):
+                if count < 0 {
+                    return
+                }
+                self.jumpRopeService.setMode(peripheral: jumpRopeDevice, mode: 2, setting: count)
+            }
+            
+            self.iredDeviceData.jumpRopeData.state.isMeasuring = true
+        }
+    }
+    
+    public func stopJumpRopeMode() {
+        // print(#function, "停止跳绳记录")
+        guard let jumpRopeDevice = devices.filter({ $0.deviceType == .jumpRope }).first?.peripheral else { return }
+        jumpRopeService.stopCurrentMode(peripheral: jumpRopeDevice)
+        iredDeviceData.jumpRopeData.state.isMeasuring = false
+        iredDeviceData.jumpRopeData.state.isMeasurementCompleted = true
+        // 如果心跳带也正在测量，则自动停止心跳带的记录
+        if iredDeviceData.heartRateData.state.isMeasuring {
+            stopHeartRateRecording()
+        }
+        // print("停止时间是否成功", Self.jumpRopeTimer?.isValid)
+    }
 }
 
 // MARK: Heart Rate Belt
 extension iREdBluetooth: @preconcurrency HeartrateProfileDelegate {
     public func HeartRateCallback(heartrate: Int) {
         iredDeviceData.heartRateData.data.heartrate = heartrate
+        iredDeviceData.heartRateData.data.lastUpdatedTime = Date()
         skDelegate?.heartRateCallback(callback: .heartrate(heartrate: heartrate))
     }
     
     public func HeartRateProfileBatteryLevelCallback(batteryLevel: Int) {
-        iredDeviceData.heartRateData.data = HeartRateBeltModel(batteryPercentage: batteryLevel)
+        iredDeviceData.heartRateData.data.batteryPercentage = batteryLevel
+        iredDeviceData.heartRateData.data.lastUpdatedTime = Date()
         skDelegate?.heartRateCallback(callback: .battery(batteryLevel: batteryLevel))
     }
 }
@@ -1357,6 +1432,7 @@ extension iREdBluetooth {
     /// 使用前应确保已有有效的心率值（`heartrate`）。
     @MainActor public func startHeartRateRecording() {
         self.iredDeviceData.heartRateData.data.heartrateArray = [] // 清空历史数据
+        self.iredDeviceData.heartRateData.data.lastUpdatedTime = Date()
         // 标记正在测量
         iredDeviceData.heartRateData.state.isMeasuring = true
         // 清除之前的定时器（如有）
@@ -1370,6 +1446,7 @@ extension iREdBluetooth {
                 
                 let item = HeartRateBeltArrayModel(date: Date(), heartrate: currentHR)
                 self.iredDeviceData.heartRateData.data.heartrateArray.append(item)
+                self.iredDeviceData.heartRateData.data.lastUpdatedTime = Date()
             }
         }
         

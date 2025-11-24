@@ -287,6 +287,8 @@ public struct HealthKitThermometerModel {
     /// 模式描述，如“额温”、“耳温”等。
     public var modeDescription: String? = nil
     
+    public var lastUpdatedTime: Date = Date()
+    
     /// 空模型初始化。
     @MainActor public static let empty = HealthKitThermometerModel()
 }
@@ -352,6 +354,8 @@ public struct HealthKitOximeterModel {
     
     /// 脉搏波形数据（用于图表绘制）。
     public var PlethysmographyArray: [Int] = []
+    
+    public var lastUpdatedTime: Date = Date()
     
     /// 空模型初始化。
     @MainActor public static let empty = HealthKitOximeterModel()
@@ -423,6 +427,8 @@ public struct HealthKitSphygmometerModel {
     /// 是否检测到心律不齐（1 表示有，0 表示无）。
     public var irregularPulse: Int? = nil
     
+    public var lastUpdatedTime: Date = Date()
+    
     /// 空模型初始化（用于清空或重置数据）。
     @MainActor public static let empty = HealthKitSphygmometerModel()
 }
@@ -454,6 +460,8 @@ public struct HealthKitScaleModel {
     
     /// 是否为最终稳定结果。
     public var isFinalResult: Bool? = nil
+    
+    public var lastUpdatedTime: Date = Date()
     
     /// 将当前体重和身高转换为 BMI 值。
     /// - Parameters:
@@ -554,6 +562,8 @@ public struct JumpRopeModel: Equatable {
     /// - 0: 电量 <= 10%
     public var batteryLevel: Int? = nil
     
+    public var lastUpdatedTime: Date = Date()
+    
     /// 空模型，用于初始化或清空状态
     @MainActor public static let empty = JumpRopeModel()
     
@@ -624,6 +634,8 @@ public struct HeartRateBeltModel: Equatable {
     public var batteryPercentage: Int? = nil
     /// 心率变化历史记录（每秒记录一次）
     public var heartrateArray: [HeartRateBeltArrayModel] = []
+    
+    public var lastUpdatedTime: Date = Date()
     
     /// 获取记录期间所有心率值的总和
     /// - Returns: 心率值累加总和（用于计算平均心率等）
