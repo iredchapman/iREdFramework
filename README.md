@@ -1,241 +1,251 @@
-## Package 安裝
+# iREdFramework README (English)
 
-你可以透過 Swift Package Manager 添加依賴：
+## Package Installation
+
+Add the package through Swift Package Manager:
 
 ```
 https://github.com/iredchapman/iREdFramework.git
 ```
-要在 Xcode 專案中新增套件依賴，請選擇 File > Add Package Dependency，並輸入此 URL。
 
+In Xcode, choose **File > Add Package Dependency** and enter the URL above to bring the framework into your project.
 
-------
+---
 
-## 權限配置
+## Permission Configuration
 
-在使用藍牙設備前，需要在 Xcode 的 **Info.plist** 中添加藍牙權限描述，否則可能會導致應用無法正常掃描或連接設備。
+Before accessing Bluetooth peripherals, add the necessary privacy descriptions to your app’s **Info.plist**; otherwise scanning and pairing may fail.
 
-### 操作步驟
-1. 打開專案的TARGET>>Info。
-2. 添加以下兩個權限鍵值：
+**Steps**
+1. Open your target’s **Info** tab.
+2. Add the following keys:
    - `Privacy - Bluetooth Always Usage Description`
-   - `Required background modes` [可選]
-3. 在值中填寫用戶可見的提示文案，例如：
-   - “需要使用藍牙來連接體溫計、血氧儀等設備”
-   - “允許應用在後台允許，持續記錄藍牙數據”
+   - `Required background modes` (optional)
+3. Provide user-facing description strings such as:
+   - “Bluetooth access is required to connect thermometers, oximeters, etc.”
+   - “Allow the app to keep recording Bluetooth data while running in the background.”
 
-### 範例截圖
+**Sample Screenshot**
 
 <p align="center">
-  <img src="https://github.com/iredchapman/iREdFramework/blob/main/images/add_permissions.png?raw=true" width="500" alt="添加藍牙權限範例">
+  <img src="https://github.com/iredchapman/iREdFramework/blob/main/images/add_permissions.png?raw=true" width="500" alt="Sample Bluetooth permission settings">
 </p>
 
-------
+---
 
-## 使用說明：iREdBluetooth 藍牙通信框架
+## Usage Guide: iREdBluetooth
 
-在使用 `iREdBluetooth` 或任何模型如 `iRedDeviceData`、`HealthKitThermometerData` 等之前，**請務必在 Swift 文件頂部導入：**
+Before working with `iREdBluetooth` or any provided models (e.g., `iRedDeviceData`, `HealthKitThermometerData`), import the framework at the top of your Swift file:
 
 ```swift
 import iREdFramework
 ```
 
-------
+---
 
-## 1. 獲取藍牙數據實例
+## 1. Getting Bluetooth Data Instances
 
 ```swift
 @StateObject var ble = iREdBluetooth.shared
 ```
 
-透過 `ble.iredDeviceData` 可訪問所有支持的藍牙設備數據模型，例如：
+Access every supported device model through `ble.iredDeviceData`:
 
-- thermometerData（體溫計）
-- oximeterData（血氧儀）
-- sphygmometerData（血壓計）
-- scaleData（體重秤）
-- jumpRopeData（跳繩）
-- heartRateData（心率帶）
+- `thermometerData`
+- `oximeterData`
+- `sphygmometerData`
+- `scaleData`
+- `jumpRopeData`
+- `heartRateData`
 
-每個設備數據模型都包含兩個部分：
+Each model exposes two sections:
+- `state`: connectivity and measurement state
+- `data`: domain-specific values such as temperature, SpO₂, weight, etc.
 
-- `state`：設備狀態（是否連接、是否測量中、是否測量完成等）
-- `data`：設備業務數據（例如溫度、血氧、心率、重量等）
+---
 
-------
+## 2. Scanning and Connecting
 
-## 2. 藍牙掃描與連接
-
-### 啟動配對
+### Start Pairing
 
 ```swift
-ble.startPairing(to: .thermometer) // 開始配對溫度計
+ble.startPairing(to: .thermometer) // Start pairing thermometer
 ```
 
-**支持的設備類型**
+`startPairing(to:)` accepts any of:
 
-`startPairing(to:)` 可用於以下設備：
-- `.thermometer`（體溫計）
-- `.oximeter`（血氧儀）
-- `.sphygmometer`（血壓計）
-- `.jumpRope`（跳繩）
-- `.heartRateBelt`（心率帶）
-- `.scale`（體重秤）
+- `.thermometer`
+- `.oximeter`
+- `.sphygmometer`
+- `.jumpRope`
+- `.heartRateBelt`
+- `.scale`
 
-範例：
+Example:
 
 ```swift
-// 任選其一的設備類型開始配對
 ble.startPairing(to: .oximeter)
 ble.startPairing(to: .sphygmometer)
 ble.startPairing(to: .jumpRope)
 ```
 
-> 提示：框架會在成功配對設備後，自動將配對資訊持久化存儲到 UserDefaults，下次可透過 `connect(from:)` 自動連接上次配對的設備。
+After a successful pairing, the framework persists device info in `UserDefaults`, allowing you to reconnect automatically via `connect(from:)`.
 
-### 配對設置 RSSI 過濾
+### RSSI Filtering During Pairing
 
 ```swift
 ble.setRSSI(limit: -60)
 ```
 
-**RSSI 說明：**  
-RSSI（Received Signal Strength Indicator，接收信號強度指示）是用來衡量藍牙信號強弱的數值，單位通常是 dBm。  
-數值越接近 0，表示信號越強；數值越小（如 -90），表示信號越弱。  
-例如設置 RSSI 限制為 -60，表示只會配對信號強於 -60 dBm 的設備，可以避免配對過遠或信號不穩定的設備。
+RSSI (Received Signal Strength Indicator) measures Bluetooth signal strength in dBm. Values closer to 0 indicate stronger signals. Setting the limit to -60 ensures that only peripherals with stronger signals than -60 dBm can pair, reducing unstable connections.
 
-### 停止配對
+### Stop Pairing
 
 ```swift
-ble.stopPairing() // 停止配對
+ble.stopPairing()
 ```
 
-### 連接設備（自動查找上次配對設備）
+### Connect to the Last Paired Device
 
 ```swift
-ble.connect(from: .thermometer) // 連接溫度計
+ble.connect(from: .thermometer)
 ```
 
-> 連接同樣支持以下設備類型：`.thermometer`、`.oximeter`、`.sphygmometer`、`.jumpRope`、`.heartRateBelt`、`.scale`。  
-> 說明：`connect(from:)` 僅在**該設備類型已經完成配對並保存了配對記錄**時才會生效。
+The same device categories listed above are supported. `connect(from:)` only works if that type has an existing pairing record.
 
-### 斷開設備
+### Disconnect
 
 ```swift
-ble.disconnect(from: .thermometer) // 斷開連接溫度計
+ble.disconnect(from: .thermometer)
 ```
 
-斷開支持所有上面列出的設備類型。
+`disconnect(from:)` works for every supported device type.
 
+---
 
+## 3. Reading Device States and Data
 
-------
-
-## 3. 讀取設備狀態與數據
-
-### 體溫計數據（Thermometer）
+### Thermometer
 
 ```swift
 let thermometer = ble.iredDeviceData.thermometerData
+
 let peripheralName = thermometer.data.peripheralName // peripheral name
 let macAddress = thermometer.data.macAddress // MAC address
-let temperature = thermometer.data.temperature // Double? 溫度(℃)
-let mode = thermometer.data.modeDescription // String? 模式("Adult Forehead"、"Child Forehead"、"Ear Canal"、"Object")
-let battery = thermometer.data.battery // String? 電池電量： 滿電：0xA0, >=80%：0x80，>=50%：0x50，<=10%：0x10
-let isPaired = thermometer.state.isPaired // 是否已配對
-let isPairing = thermometer.state.isPairing // 是否正在配對
-let isConnected = thermometer.state.isConnected // 當前是否已連接
-```
-SwiftUI 監聽測量完成：當 `thermometer.state.isMeasurementCompleted` 變為 `true` 時（框架內部會在回調後短暫置為 true 再復位），可以在 `onChange` 中讀取溫度值並更新 UI。
+let temperature = thermometer.data.temperature // Double? temperature (℃)
+let mode = thermometer.data.modeDescription // String? mode ("Adult Forehead", "Child Forehead", "Ear Canal", "Object")
+let battery = thermometer.data.battery // String? battery: full=0xA0, >=80%=0x80, >=50%=0x50, <=10%=0x10
+let lastUpdatedTime = thermometer.data.lastUpdatedTime // Last update time of the data
 
-### 血氧儀數據（Oximeter）
+let isPaired = thermometer.state.isPaired // paired status
+let isPairing = thermometer.state.isPairing // currently pairing
+let isConnected = thermometer.state.isConnected // currently connected
+```
+
+When `thermometer.state.isMeasurementCompleted` toggles to `true` (it resets shortly after), handle SwiftUI’s `onChange` to fetch the reading and update your UI.
+
+### Oximeter
 
 ```swift
 let oximeter = ble.iredDeviceData.oximeterData
+
 let peripheralName = oximeter.data.peripheralName // peripheral name
 let macAddress = oximeter.data.macAddress // MAC address
-let spo2 = oximeter.data.spo2 // Int? 血氧
-let pulse = oximeter.data.pulse // Int? 脈搏
-let pi = oximeter.data.pi // Double? 灌注指數
-let battery = oximeter.data.battery // Int? 電池電量 0-100
-let isPaired = oximeter.state.isPaired // 是否已配對
-let isPairing = oximeter.state.isPairing // 是否正在配對
-let isConnected = oximeter.state.isConnected // 當前是否已連接
+let spo2 = oximeter.data.spo2 // Int? blood oxygen (SpO₂)
+let pulse = oximeter.data.pulse // Int? pulse rate
+let pi = oximeter.data.pi // Double? perfusion index
+let pi = oximeter.data.PlethysmographyArray // 
+let battery = oximeter.data.battery // Int? battery level 0-100
+let lastUpdatedTime = oximeter.data.lastUpdatedTime // Last update time of the data
+
+let isPaired = oximeter.state.isPaired // paired status
+let isPairing = oximeter.state.isPairing // currently pairing
+let isConnected = oximeter.state.isConnected // currently connected
 ```
 
-### 血壓計數據（Sphygmometer）
+### Sphygmometer
 
 ```swift
 let sphygmometer = ble.iredDeviceData.sphygmometerData
+
 let peripheralName = sphygmometer.data.peripheralName // peripheral name
 let macAddress = sphygmometer.data.macAddress // MAC address
-let pressure = sphygmometer.data.pressure // Int? 量度時的壓力(mmHg)
-let systolic = sphygmometer.data.systolic // Int? 收縮壓
-let diastolic = sphygmometer.data.diastolic // Int? 舒張壓
-let pulse = sphygmometer.data.pulse // Int? 脈搏
-let isPaired = sphygmometer.state.isPaired // 是否已配對
-let isPairing = sphygmometer.state.isPairing // 是否正在配對
-let isConnected = sphygmometer.state.isConnected // 當前是否已連接
-```
-SwiftUI 監聽測量完成：當 `sphygmometer.state.isMeasurementCompleted` 變為 `true` 時（框架內部會在回調後短暫置為 true 再復位），可以在 `onChange` 中讀取數值並更新 UI。
+let pressure = sphygmometer.data.pressure // Int? cuff pressure while measuring (mmHg)
+let systolic = sphygmometer.data.systolic // Int? systolic pressure
+let diastolic = sphygmometer.data.diastolic // Int? diastolic pressure
+let pulse = sphygmometer.data.pulse // Int? pulse rate
+let lastUpdatedTime = sphygmometer.data.lastUpdatedTime // Last update time of the data
 
-### 體重秤數據（Scale）
+let isPaired = sphygmometer.state.isPaired // paired status
+let isPairing = sphygmometer.state.isPairing // currently pairing
+let isConnected = sphygmometer.state.isConnected // currently connected
+```
+
+Monitor `sphygmometer.state.isMeasurementCompleted` to know when measurement results are available.
+
+### Scale
 
 ```swift
 let scale = ble.iredDeviceData.scaleData
+
 let peripheralName = scale.data.peripheralName // peripheral name
 let macAddress = scale.data.macAddress // MAC address
-let weight = scale.data.weight // Double? 體重(kg)
-let isFinalResult = scale.data.isFinalResult // Bool? 是否最終結果
-let bmi = scale.data.toBMI(height: Int, weight: Double) // Double 傳遞體重和身高，返回bmi
-let body_fat = scale.data.toBodyFat(height: Int, age: Int, gender: String) // Double 傳遞身高、年齡和性別(male/female)，返回body_fat
-let isPaired = scale.state.isPaired // 是否已配對
-let isPairing = scale.state.isPairing // 是否正在配對
-let isConnected = scale.state.isConnected // 當前是否已連接
-```
-SwiftUI 監聽測量完成：當 `scale.state.isMeasurementCompleted` 變為 `true` 時（框架內部會在回調後短暫置為 true 再復位），可以在 `onChange` 中讀取數值並更新 UI。
+let weight = scale.data.weight // Double? weight (kg)
+let isFinalResult = scale.data.isFinalResult // Bool? indicates whether this is the final reading
+let bmi = scale.data.toBMI(height: Int, weight: Double) // Double BMI computed from height and weight
+let body_fat = scale.data.toBodyFat(height: Int, age: Int, gender: String) // Double body fat result (gender: "male"/"female")
+let lastUpdatedTime = scale.data.lastUpdatedTime // Last update time of the data
 
-### 跳繩數據（Jump Rope）
+let isPaired = scale.state.isPaired // paired status
+let isPairing = scale.state.isPairing // currently pairing
+let isConnected = scale.state.isConnected // currently connected
+```
+
+Use SwiftUI’s `onChange` with `scale.state.isMeasurementCompleted` to capture final weight, BMI, and body fat readings.
+
+### Jump Rope
 
 ```swift
 let rope = ble.iredDeviceData.jumpRopeData
+
 let peripheralName = rope.data.peripheralName // peripheral name
 let macAddress = rope.data.macAddress // MAC address
-let count = rope.data.count // Int? 跳繩次數
-let time = rope.data.time // Int? 跳繩時長(秒)
-let mode = rope.data.mode // Int? 跳繩模式(0 = 自由跳, 1 = 計時跳, 2 = 計數跳)
-let battery = rope.data.batteryLevel // Int? 電池電量等級（等級：4 >80%，3 >50%，2 >25%，1 >10%，0 ≤10%）需要轉換成百分比
-let setting = rope.data.setting // Int? 用户设置的参数（如目标时间/计数等）
-let status = rope.data.status // Int? 当前状态（例如是否在跳跃中
-let isPaired = rope.state.isPaired // 是否已配對
-let isPairing = rope.state.isPairing // 是否正在配對
-let isConnected = rope.state.isConnected // 當前是否已連接
+let count = rope.data.count // Int? jump count
+let time = rope.data.time // Int? jump duration (seconds)
+let mode = rope.data.mode // Int? mode (0 free, 1 timed, 2 counted)
+let battery = rope.data.batteryLevel // Int? battery level tier (4>80%, 3>50%, 2>25%, 1>10%, 0≤10%) convert to %
+let setting = rope.data.setting // Int? user-configured parameters (target time/count, etc.)
+let status = rope.data.status // Int? current status (e.g., actively jumping)
+let lastUpdatedTime = rope.data.lastUpdatedTime // Last update time of the data
 
-// 跳繩支持三種模式：自由跳、計時跳、計數跳。可以發送指令
-ble.startJumpRopeRecording(.free) { result in
-    switch result {
-    case .success(): print("開始跳繩記錄")
-    case .failure(let err): print(err.localizedDescription)
-    }
-} // 自由跳繩
+let isPaired = rope.state.isPaired // paired status
+let isPairing = rope.state.isPairing // currently pairing
+let isConnected = rope.state.isConnected // currently connected
 
-ble.startJumpRopeRecording(.time(second: 10)) {...} // 設定跳繩時間10秒為目標
-ble.startJumpRopeRecording(.count(count: 10)) {...} // 設定跳繩數量10個為目標
+// Jump rope supports free, timed, and counted modes; control recording via commands
+ble.startJumpRopeRecording(.free) // Free mode
 
-ble.stopJumpRopeRecording() // 停止跳繩記錄
+ble.startJumpRopeRecording(.time(second: 10)) // Set target time to 10 seconds
+ble.startJumpRopeRecording(.count(count: 10)) // Set target count to 10 jumps
+
+ble.stopJumpRopeMode() // Stop jump rope recording
 ```
 
-### 心率帶數據（Heart Rate Belt）
+### Heart Rate Belt
 
 ```swift
 let heartRate = ble.iredDeviceData.heartRateData
+
 let peripheralName = heartRate.data.peripheralName // peripheral name
 let macAddress = heartRate.data.macAddress // MAC address
-let heartrate = heartRate.data.heartrate // Int? 心率
-let battery = heartRate.data.batteryPercentage // Int? 電池電量(%)
-let isPaired = heartRate.state.isPaired // 是否已配對
-let isPairing = heartRate.state.isPairing // 是否正在配對
-let isConnected = heartRate.state.isConnected // 當前是否已連接
+let heartrate = heartRate.data.heartrate // Int? heart rate (bpm)
+let battery = heartRate.data.batteryPercentage // Int? battery level (%)
+let lastUpdatedTime = heartRate.data.lastUpdatedTime // Last update time of the data
+
+let isPaired = heartRate.state.isPaired // paired status
+let isPairing = heartRate.state.isPairing // currently pairing
+let isConnected = heartRate.state.isConnected // currently connected
 ```
 
-------
+---
 
