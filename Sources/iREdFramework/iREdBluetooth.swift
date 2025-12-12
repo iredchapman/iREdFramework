@@ -483,18 +483,25 @@ extension iREdBluetooth: @preconcurrency CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .unknown:
+            print("Bluetooth state is unknown")
             bleDelegate?.bluetoothStateDidChange(state: .unknown)
         case .resetting:
+            print("Bluetooth state is resetting")
             bleDelegate?.bluetoothStateDidChange(state: .resetting)
         case .unsupported:
+            print("Bluetooth state is unsupported")
             bleDelegate?.bluetoothStateDidChange(state: .unsupported)
         case .unauthorized:
+            print("Bluetooth state is unauthorized")
             bleDelegate?.bluetoothStateDidChange(state: .unauthorized)
         case .poweredOff:
+            print("Bluetooth state is poweredOff")
             bleDelegate?.bluetoothStateDidChange(state: .poweredOff)
         case .poweredOn:
+            print("Bluetooth state is poweredOn")
             bleDelegate?.bluetoothStateDidChange(state: .poweredOn)
         @unknown default:
+            print("Bluetooth state is unknown")
             bleDelegate?.bluetoothStateDidChange(state: .unknown)
         }
     }

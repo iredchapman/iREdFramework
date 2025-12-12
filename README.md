@@ -1,251 +1,226 @@
-# iREdFramework README (English)
+# iREdFramework
 
-## Package Installation
+This framework simplifies Bluetooth connectivity for iRed health devices (Thermometers, Oximeters, etc.).
 
-Add the package through Swift Package Manager:
-
-```
-https://github.com/iredchapman/iREdFramework.git
-```
-
-In Xcode, choose **File > Add Package Dependency** and enter the URL above to bring the framework into your project.
-
----
-
-## Permission Configuration
-
-Before accessing Bluetooth peripherals, add the necessary privacy descriptions to your app’s **Info.plist**; otherwise scanning and pairing may fail.
-
-**Steps**
-1. Open your target’s **Info** tab.
-2. Add the following keys:
-   - `Privacy - Bluetooth Always Usage Description`
-   - `Required background modes` (optional)
-3. Provide user-facing description strings such as:
-   - “Bluetooth access is required to connect thermometers, oximeters, etc.”
-   - “Allow the app to keep recording Bluetooth data while running in the background.”
-
-**Sample Screenshot**
-
-<p align="center">
-  <img src="https://github.com/iredchapman/iREdFramework/blob/main/images/add_permissions.png?raw=true" width="500" alt="Sample Bluetooth permission settings">
-</p>
-
----
-
-## Usage Guide: iREdBluetooth
-
-Before working with `iREdBluetooth` or any provided models (e.g., `iRedDeviceData`, `HealthKitThermometerData`), import the framework at the top of your Swift file:
-
+## Setup
+**Important**: You must import the following packages in every view that uses the framework.
 ```swift
-import iREdFramework
-```
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
----
-
-## 1. Getting Bluetooth Data Instances
-
-```swift
 @StateObject var ble = iREdBluetooth.shared
 ```
 
-Access every supported device model through `ble.iredDeviceData`:
+## 1. Device Usage Examples
 
-- `thermometerData`
-- `oximeterData`
-- `sphygmometerData`
-- `scaleData`
-- `jumpRopeData`
-- `heartRateData`
-
-Each model exposes two sections:
-- `state`: connectivity and measurement state
-- `data`: domain-specific values such as temperature, SpO₂, weight, etc.
-
----
-
-## 2. Scanning and Connecting
-
-### Start Pairing
-
-```swift
-ble.startPairing(to: .thermometer) // Start pairing thermometer
-```
-
-`startPairing(to:)` accepts any of:
-
-- `.thermometer`
-- `.oximeter`
-- `.sphygmometer`
-- `.jumpRope`
-- `.heartRateBelt`
-- `.scale`
-
-Example:
-
-```swift
-ble.startPairing(to: .oximeter)
-ble.startPairing(to: .sphygmometer)
-ble.startPairing(to: .jumpRope)
-```
-
-After a successful pairing, the framework persists device info in `UserDefaults`, allowing you to reconnect automatically via `connect(from:)`.
-
-### RSSI Filtering During Pairing
-
-```swift
-ble.setRSSI(limit: -60)
-```
-
-RSSI (Received Signal Strength Indicator) measures Bluetooth signal strength in dBm. Values closer to 0 indicate stronger signals. Setting the limit to -60 ensures that only peripherals with stronger signals than -60 dBm can pair, reducing unstable connections.
-
-### Stop Pairing
-
-```swift
-ble.stopPairing()
-```
-
-### Connect to the Last Paired Device
-
-```swift
-ble.connect(from: .thermometer)
-```
-
-The same device categories listed above are supported. `connect(from:)` only works if that type has an existing pairing record.
-
-### Disconnect
-
-```swift
-ble.disconnect(from: .thermometer)
-```
-
-`disconnect(from:)` works for every supported device type.
-
----
-
-## 3. Reading Device States and Data
+Copy these patterns to build your views.
 
 ### Thermometer
 
 ```swift
-let thermometer = ble.iredDeviceData.thermometerData
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
-let peripheralName = thermometer.data.peripheralName // peripheral name
-let macAddress = thermometer.data.macAddress // MAC address
-let temperature = thermometer.data.temperature // Double? temperature (℃)
-let mode = thermometer.data.modeDescription // String? mode ("Adult Forehead", "Child Forehead", "Ear Canal", "Object")
-let battery = thermometer.data.battery // String? battery: full=0xA0, >=80%=0x80, >=50%=0x50, <=10%=0x10
-let lastUpdatedTime = thermometer.data.lastUpdatedTime // Last update time of the data
+@StateObject var ble = iREdBluetooth.shared
 
-let isPaired = thermometer.state.isPaired // paired status
-let isPairing = thermometer.state.isPairing // currently pairing
-let isConnected = thermometer.state.isConnected // currently connected
+Text(ble.iredDeviceData.thermometerData.state.isPairing ? "Pairing..." : 
+     ble.iredDeviceData.thermometerData.state.isPaired ? "Paired" : "Unpaired")
+    .foregroundColor(ble.iredDeviceData.thermometerData.state.isPairing ? .orange : 
+                     ble.iredDeviceData.thermometerData.state.isPaired ? .blue : .gray)
+
+Text(ble.iredDeviceData.thermometerData.state.isConnected ? "Connected" : "Disconnected")
+    .foregroundColor(ble.iredDeviceData.thermometerData.state.isConnected ? .green : .red)
+
+Button("Pair") { ble.startPairing(to: .thermometer) }
+Button("Stop") { ble.stopPairing() }
+Button("Connect") { ble.connect(from: .thermometer) }
+Button("Disconnect") { ble.disconnect(from: .thermometer) }
+
+if let temp = ble.iredDeviceData.thermometerData.data.temperature {
+Text("\(String(format: "%.1f", temp))°C")
+    .font(.system(size: 50))
+} else {
+Text("--.-°C")
+    .font(.system(size: 50))
+}
+
+Text("Mode: \(ble.iredDeviceData.thermometerData.data.modeDescription ?? "-")")
+Text("Mode Code: \(ble.iredDeviceData.thermometerData.data.modeCode ?? -1)")
+Text("Battery: \(ble.iredDeviceData.thermometerData.data.battery ?? "-")")
+Text("Name: \(ble.iredDeviceData.thermometerData.data.peripheralName ?? "-")")
+Text("MAC: \(ble.iredDeviceData.thermometerData.data.macAddress ?? "-")")
+Text("Last Updated: \(ble.iredDeviceData.thermometerData.data.lastUpdatedTime.description)")
 ```
-
-When `thermometer.state.isMeasurementCompleted` toggles to `true` (it resets shortly after), handle SwiftUI’s `onChange` to fetch the reading and update your UI.
 
 ### Oximeter
 
 ```swift
-let oximeter = ble.iredDeviceData.oximeterData
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
-let peripheralName = oximeter.data.peripheralName // peripheral name
-let macAddress = oximeter.data.macAddress // MAC address
-let spo2 = oximeter.data.spo2 // Int? blood oxygen (SpO₂)
-let pulse = oximeter.data.pulse // Int? pulse rate
-let pi = oximeter.data.pi // Double? perfusion index
-let pi = oximeter.data.PlethysmographyArray // 
-let battery = oximeter.data.battery // Int? battery level 0-100
-let lastUpdatedTime = oximeter.data.lastUpdatedTime // Last update time of the data
+@StateObject var ble = iREdBluetooth.shared
 
-let isPaired = oximeter.state.isPaired // paired status
-let isPairing = oximeter.state.isPairing // currently pairing
-let isConnected = oximeter.state.isConnected // currently connected
+Text(ble.iredDeviceData.oximeterData.state.isPairing ? "Pairing..." : 
+       ble.iredDeviceData.oximeterData.state.isPaired ? "Paired" : "Unpaired")
+Text(ble.iredDeviceData.oximeterData.state.isConnected ? "Connected" : "Disconnected")
+
+Button("Pair") { ble.startPairing(to: .oximeter) }
+Button("Stop") { ble.stopPairing() }
+Button("Connect") { ble.connect(from: .oximeter) }
+Button("Disconnect") { ble.disconnect(from: .oximeter) }
+
+Text("SpO2")
+Text("\(ble.iredDeviceData.oximeterData.data.spo2 ?? 0)%").font(.title)
+
+Text("Pulse")
+Text("\(ble.iredDeviceData.oximeterData.data.pulse ?? 0) BPM").font(.title)
+
+Text("PI")
+Text(String(format: "%.2f", ble.iredDeviceData.oximeterData.data.pi ?? 0.0))
+
+Text("Avg SpO2: \(ble.iredDeviceData.oximeterData.data.averageSpo2())")
+Text("Avg BPM: \(ble.iredDeviceData.oximeterData.data.averageBPM())")
+Text("Avg PI: \(String(format: "%.2f", ble.iredDeviceData.oximeterData.data.averagePI()))")
+
+Text("Battery: \(ble.iredDeviceData.oximeterData.data.battery ?? 0)%")
+Text("Name: \(ble.iredDeviceData.oximeterData.data.peripheralName ?? "-")")
+Text("MAC: \(ble.iredDeviceData.oximeterData.data.macAddress ?? "-")")
+Text("Last Updated: \(ble.iredDeviceData.oximeterData.data.lastUpdatedTime.description)")
+
+
 ```
 
-### Sphygmometer
+### Sphygmometer (Blood Pressure)
 
 ```swift
-let sphygmometer = ble.iredDeviceData.sphygmometerData
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
-let peripheralName = sphygmometer.data.peripheralName // peripheral name
-let macAddress = sphygmometer.data.macAddress // MAC address
-let pressure = sphygmometer.data.pressure // Int? cuff pressure while measuring (mmHg)
-let systolic = sphygmometer.data.systolic // Int? systolic pressure
-let diastolic = sphygmometer.data.diastolic // Int? diastolic pressure
-let pulse = sphygmometer.data.pulse // Int? pulse rate
-let lastUpdatedTime = sphygmometer.data.lastUpdatedTime // Last update time of the data
+@StateObject var ble = iREdBluetooth.shared
 
-let isPaired = sphygmometer.state.isPaired // paired status
-let isPairing = sphygmometer.state.isPairing // currently pairing
-let isConnected = sphygmometer.state.isConnected // currently connected
+Text(ble.iredDeviceData.sphygmometerData.state.isPairing ? "Pairing..." : 
+         ble.iredDeviceData.sphygmometerData.state.isPaired ? "Paired" : "Unpaired")
+
+Text(ble.iredDeviceData.sphygmometerData.state.isConnected ? "Connected" : "Disconnected")
+    .foregroundColor(ble.iredDeviceData.sphygmometerData.state.isConnected ? .green : .red)
+
+Button("Pair") { ble.startPairing(to: .sphygmometer) }
+Button("Stop") { ble.stopPairing() }
+Button("Connect") { ble.connect(from: .sphygmometer) }
+Button("Disconnect") { ble.disconnect(from: .sphygmometer) }
+
+if ble.iredDeviceData.sphygmometerData.state.isMeasuring {
+    Text("Measuring: \(ble.iredDeviceData.sphygmometerData.data.pressure ?? 0) mmHg")
+        .font(.title)
+        .foregroundColor(.orange)
+    Text("Pulse Status: \(ble.iredDeviceData.sphygmometerData.data.pulseStatus ?? 0)")
+} else {
+    Text("\(ble.iredDeviceData.sphygmometerData.data.systolic ?? 0)")
+    Text("\(ble.iredDeviceData.sphygmometerData.data.diastolic ?? 0)")
+    Text("\(ble.iredDeviceData.sphygmometerData.data.pulse ?? 0)")
+}
+
+Text("Irregular Pulse: \(ble.iredDeviceData.sphygmometerData.data.irregularPulse == 1 ? "Yes" : "No")")
+Text("Name: \(ble.iredDeviceData.sphygmometerData.data.peripheralName ?? "-")")
+Text("MAC: \(ble.iredDeviceData.sphygmometerData.data.macAddress ?? "-")")
+Text("Last Updated: \(ble.iredDeviceData.sphygmometerData.data.lastUpdatedTime.description)")
+
 ```
 
-Monitor `sphygmometer.state.isMeasurementCompleted` to know when measurement results are available.
-
-### Scale
+### ⚖️ Scale
 
 ```swift
-let scale = ble.iredDeviceData.scaleData
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
-let peripheralName = scale.data.peripheralName // peripheral name
-let macAddress = scale.data.macAddress // MAC address
-let weight = scale.data.weight // Double? weight (kg)
-let isFinalResult = scale.data.isFinalResult // Bool? indicates whether this is the final reading
-let bmi = scale.data.toBMI(height: Int, weight: Double) // Double BMI computed from height and weight
-let body_fat = scale.data.toBodyFat(height: Int, age: Int, gender: String) // Double body fat result (gender: "male"/"female")
-let lastUpdatedTime = scale.data.lastUpdatedTime // Last update time of the data
+@StateObject var ble = iREdBluetooth.shared
 
-let isPaired = scale.state.isPaired // paired status
-let isPairing = scale.state.isPairing // currently pairing
-let isConnected = scale.state.isConnected // currently connected
+Text(ble.iredDeviceData.scaleData.state.isPairing ? "Pairing..." : 
+     ble.iredDeviceData.scaleData.state.isPaired ? "Paired" : "Unpaired")
+
+Text(ble.iredDeviceData.scaleData.state.isConnected ? "Connected" : "Disconnected")
+
+Button("Pair") { ble.startPairing(to: .scale) }
+Button("Stop") { ble.stopPairing() }
+Button("Connect") { ble.connect(from: .scale) }
+Button("Disconnect") { ble.disconnect(from: .scale) }
+
+Text("\(String(format: "%.2f", ble.iredDeviceData.scaleData.data.weight ?? 0.0)) kg")
+    .font(.system(size: 50))
+
+if ble.iredDeviceData.scaleData.data.isFinalResult == true {
+    Text("Stable").foregroundColor(.green)
+} else {
+    Text("Measuring...").foregroundColor(.orange)
+}
+
+Text("Name: \(ble.iredDeviceData.scaleData.data.peripheralName ?? "-")")
+Text("MAC: \(ble.iredDeviceData.scaleData.data.macAddress ?? "-")")
+Text("Last Updated: \(ble.iredDeviceData.scaleData.data.lastUpdatedTime.description)")
 ```
 
-Use SwiftUI’s `onChange` with `scale.state.isMeasurementCompleted` to capture final weight, BMI, and body fat readings.
-
-### Jump Rope
-
+### 🪢 Jump Rope
 ```swift
-let rope = ble.iredDeviceData.jumpRopeData
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
-let peripheralName = rope.data.peripheralName // peripheral name
-let macAddress = rope.data.macAddress // MAC address
-let count = rope.data.count // Int? jump count
-let time = rope.data.time // Int? jump duration (seconds)
-let mode = rope.data.mode // Int? mode (0 free, 1 timed, 2 counted)
-let battery = rope.data.batteryLevel // Int? battery level tier (4>80%, 3>50%, 2>25%, 1>10%, 0≤10%) convert to %
-let setting = rope.data.setting // Int? user-configured parameters (target time/count, etc.)
-let status = rope.data.status // Int? current status (e.g., actively jumping)
-let lastUpdatedTime = rope.data.lastUpdatedTime // Last update time of the data
+@StateObject var ble = iREdBluetooth.shared
 
-let isPaired = rope.state.isPaired // paired status
-let isPairing = rope.state.isPairing // currently pairing
-let isConnected = rope.state.isConnected // currently connected
+Text(ble.iredDeviceData.jumpRopeData.state.isPairing ? "Pairing..." : 
+     ble.iredDeviceData.jumpRopeData.state.isPaired ? "Paired" : "Unpaired")
 
-// Jump rope supports free, timed, and counted modes; control recording via commands
-ble.startJumpRopeRecording(.free) // Free mode
+Text(ble.iredDeviceData.jumpRopeData.state.isConnected ? "Connected" : "Disconnected")
 
-ble.startJumpRopeRecording(.time(second: 10)) // Set target time to 10 seconds
-ble.startJumpRopeRecording(.count(count: 10)) // Set target count to 10 jumps
+Button("Pair") { ble.startPairing(to: .jumpRope) }
+Button("Stop") { ble.stopPairing() }
+Button("Connect") { ble.connect(from: .jumpRope) }
+Button("Disconnect") { ble.disconnect(from: .jumpRope) }
 
-ble.stopJumpRopeMode() // Stop jump rope recording
+Text("Count: \(ble.iredDeviceData.jumpRopeData.data.count ?? 0)")
+Text("Time: \(ble.iredDeviceData.jumpRopeData.data.time ?? 0)")
+Text("Setting: \(ble.iredDeviceData.jumpRopeData.data.setting ?? 0)")
+Text("Status: \(ble.iredDeviceData.jumpRopeData.data.status.flatMap { [0: "Not Jumping", 1: "Jumping", 2: "Paused", 3: "Ended"][$0] } ?? "N/A")")
+
+Text("Mode: \(ble.iredDeviceData.jumpRopeData.data.mode.flatMap { [0: "Free", 1: "Time", 2: "Count"][$0] } ?? "N/A")")
+Text("Battery: \(ble.iredDeviceData.jumpRopeData.data.batteryLevel.map { ["≤10%", ">10%", ">25%", ">50%", ">80%"][$0 <= 4 && $0 >= 0 ? $0 : 0] } ?? "N/A")")
+
+Button("Set Free Mode") { ble.setJumpRopeMode(.free) }
+Button("Set Count Mode(30)") { ble.setJumpRopeMode(.count(count: 30)) }
+Button("Set Time Mode(30)") { ble.setJumpRopeMode(.time(second: 30)) }
+
+Text("Name: \(ble.iredDeviceData.jumpRopeData.data.peripheralName ?? "-")")
+Text("MAC: \(ble.iredDeviceData.jumpRopeData.data.macAddress ?? "-")")
+Text("Last Updated: \(ble.iredDeviceData.jumpRopeData.data.lastUpdatedTime.description)")
 ```
 
-### Heart Rate Belt
-
+### 💓 Heart Rate Belt
 ```swift
-let heartRate = ble.iredDeviceData.heartRateData
+import SwiftUI
+import Combine        // REQUIRED for ObservableObject
+import iREdFramework  // The core framework
 
-let peripheralName = heartRate.data.peripheralName // peripheral name
-let macAddress = heartRate.data.macAddress // MAC address
-let heartrate = heartRate.data.heartrate // Int? heart rate (bpm)
-let battery = heartRate.data.batteryPercentage // Int? battery level (%)
-let lastUpdatedTime = heartRate.data.lastUpdatedTime // Last update time of the data
+@StateObject var ble = iREdBluetooth.shared
 
-let isPaired = heartRate.state.isPaired // paired status
-let isPairing = heartRate.state.isPairing // currently pairing
-let isConnected = heartRate.state.isConnected // currently connected
+Text(ble.iredDeviceData.heartRateData.state.isPairing ? "Pairing..." : 
+     ble.iredDeviceData.heartRateData.state.isPaired ? "Paired" : "Unpaired")
+
+Text(ble.iredDeviceData.heartRateData.state.isConnected ? "Connected" : "Disconnected")
+
+Button("Pair") { ble.startPairing(to: .heartRateBelt) }
+Button("Stop") { ble.stopPairing() }
+Button("Connect") { ble.connect(from: .heartRateBelt) }
+Button("Disconnect") { ble.disconnect(from: .heartRateBelt) }
+
+Text("\(ble.iredDeviceData.heartRateData.data.heartrate ?? 0) BPM")
+Text("Battery: \(ble.iredDeviceData.heartRateData.data.batteryPercentage ?? 0)%")
+
+Text("Name: \(ble.iredDeviceData.heartRateData.data.peripheralName ?? "-")")
+Text("MAC: \(ble.iredDeviceData.heartRateData.data.macAddress ?? "-")")
+Text("Last Updated: \(ble.iredDeviceData.heartRateData.data.lastUpdatedTime.description)")
 ```
-
----
-
