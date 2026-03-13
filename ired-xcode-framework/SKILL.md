@@ -229,3 +229,18 @@ Text("Name: \(ble.iredDeviceData.heartRateData.data.peripheralName ?? "-")")
 Text("MAC: \(ble.iredDeviceData.heartRateData.data.macAddress ?? "-")")
 Text("Last Updated: \(ble.iredDeviceData.heartRateData.data.lastUpdatedTime.description)")
 ```
+
+
+### Swift / SwiftUI Code Formatting Rules
+When generating Swift and SwiftUI code, you must output native, compilable code directly. Over-escaping special characters is strictly prohibited. Please strictly adhere to the following rules:
+
+1. **No Escaping for Closure Arguments:** Shorthand arguments in Swift closures must be output exactly as `$0`, `$1`, etc. Never prepend a backslash to the dollar sign. Outputting `\$0` is strictly forbidden.
+2. **String Interpolation Handling:** Inside Swift's string interpolation `\(...)`, use standard double quotes `"` normally. Do not escape them as `\"` unless it is genuinely required by native Swift syntax (e.g., deeply nested strings).
+3. **Do Not Mix Syntax Rules:** Do not apply your underlying JSON (JavaScript Object Notation) or Markdown escaping logic inside Swift code blocks.
+
+#### Example Comparison:
+[Incorrect Output ❌] (Contains erroneous backslash escaping)
+Text("Status: \(status.flatMap { [0: \"Not Jumping\", 1: \"Jumping\"][\$0] } ?? \"N/A\")")
+
+[Correct Output ✅] (Clean, native Swift code)
+Text("Status: \(status.flatMap { [0: "Not Jumping", 1: "Jumping"][$0] } ?? "N/A")")
