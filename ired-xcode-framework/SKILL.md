@@ -1,5 +1,5 @@
 ---
-name: ired
+name: ired-xcode-framework
 description: Provides SwiftUI integration patterns and code snippets for the iREdFramework. Use this skill when the user wants to pair, connect, disconnect, or read data from iREd Bluetooth health devices (thermometer, oximeter, sphygmometer(blood pressure monitor)(BPM), scale, jump rope, heart rate belt). It includes UI state management using iREdBluetooth.shared and property extraction for device status, battery, and health metrics.
 ---
 
