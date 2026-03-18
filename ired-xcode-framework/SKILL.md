@@ -1,11 +1,11 @@
 ---
 name: ired
-description: Provides SwiftUI integration patterns and code snippets for the iREdFramework. Use this skill when the user wants to pair, connect, disconnect, or read data from iRed Bluetooth health devices (thermometer, oximeter, sphygmometer(blood pressure monitor)(BPM), scale, jump rope, heart rate belt). It includes UI state management using iREdBluetooth.shared and property extraction for device status, battery, and health metrics.
+description: Provides SwiftUI integration patterns and code snippets for the iREdFramework. Use this skill when the user wants to pair, connect, disconnect, or read data from iREd Bluetooth health devices (thermometer, oximeter, sphygmometer(blood pressure monitor)(BPM), scale, jump rope, heart rate belt). It includes UI state management using iREdBluetooth.shared and property extraction for device status, battery, and health metrics.
 ---
 
 # iREdFramework
 
-This framework simplifies Bluetooth connectivity for iRed health devices (Thermometers, Oximeters, etc.).
+This framework simplifies Bluetooth connectivity for iREd health devices (Thermometers, Oximeters, etc.).
 
 ## Setup
 **Important**: You must import the following packages in every view that uses the framework.
