@@ -2,7 +2,6 @@ import Foundation
 import CoreBluetooth
 import HealthKitFramework
 import SportKitFramework
-import UIKit
 import SwiftUI
 
 
@@ -71,10 +70,10 @@ public final class iREdBluetooth: NSObject, ObservableObject, Sendable {
     // MARK: - 当前配对与连接流程的状态变量
     
     /// 当前配对时展示的提示弹窗（如“正在搜索设备...”）。
-    private var startPairingningAlert: UIAlertController? = nil
+    // private var startPairingningAlert: UIAlertController? = nil
     
     /// 当前连接中展示的加载弹窗（如“正在连接...”）。
-    private var connectingLoadingAlert: UIAlertController? = nil
+    // private var connectingLoadingAlert: UIAlertController? = nil
     
     /// 当前操作的目标设备 UUID（配对或连接时使用）。
     private var currentUUIDString: String? = nil
@@ -631,15 +630,15 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
             /// print("others")
             break
         }
-        startPairingningAlert?.dismiss(animated: true, completion: nil)
+        // startPairingningAlert?.dismiss(animated: true, completion: nil)
         
     }
     
     // MARK: Connect devices
     @MainActor public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        connectingLoadingAlert?.dismiss(animated: true, completion: {
-            self.connectingLoadingAlert = nil
-        })
+//        connectingLoadingAlert?.dismiss(animated: true, completion: {
+//            self.connectingLoadingAlert = nil
+//        })
         guard let name = peripheral.name else { return }
         currentUUIDString = nil
         /// print("Connection successful: \(name)")
@@ -722,9 +721,9 @@ extension iREdBluetooth: @preconcurrency CBPeripheralDelegate {
     
     // connection failed
     @MainActor public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        connectingLoadingAlert?.dismiss(animated: true, completion: {
-            self.connectingLoadingAlert = nil
-        })
+//        connectingLoadingAlert?.dismiss(animated: true, completion: {
+//            self.connectingLoadingAlert = nil
+//        })
         /// print("Connection failure: \(error?.localizedDescription ?? "Unknown error")")
         guard let name = peripheral.name else { return }
         let deviceType: iREdBluetoothDeviceType = deviceTypeByPeripheralName(name)

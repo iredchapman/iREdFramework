@@ -1,0 +1,2010 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "HealthKitFramework",
+    "printedName": "HealthKitFramework",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "CoreBluetooth",
+        "printedName": "CoreBluetooth",
+        "declKind": "Import",
+        "moduleName": "HealthKitFramework"
+      },
+      {
+        "kind": "Var",
+        "name": "HealthKitFrameworkVersionNumber",
+        "printedName": "HealthKitFrameworkVersionNumber",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Double",
+            "printedName": "Swift.Double",
+            "usr": "s:Sd"
+          }
+        ],
+        "declKind": "Var",
+        "usr": "s:18HealthKitFramework0abC13VersionNumberSdvp",
+        "mangledName": "$s18HealthKitFramework0abC13VersionNumberSdvp",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "HasInitialValue",
+          "HasStorage",
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "isLet": true,
+        "hasStorage": true,
+        "accessors": [
+          {
+            "kind": "Accessor",
+            "name": "Get",
+            "printedName": "Get()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Accessor",
+            "usr": "s:18HealthKitFramework0abC13VersionNumberSdvg",
+            "mangledName": "$s18HealthKitFramework0abC13VersionNumberSdvg",
+            "moduleName": "HealthKitFramework",
+            "implicit": true,
+            "accessorKind": "get"
+          }
+        ]
+      },
+      {
+        "kind": "Var",
+        "name": "HealthKitFrameworkVersionString",
+        "printedName": "HealthKitFrameworkVersionString",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "String",
+            "printedName": "Swift.String",
+            "usr": "s:SS"
+          }
+        ],
+        "declKind": "Var",
+        "usr": "s:18HealthKitFramework0abC13VersionStringSSvp",
+        "mangledName": "$s18HealthKitFramework0abC13VersionStringSSvp",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "HasInitialValue",
+          "HasStorage",
+          "AccessControl"
+        ],
+        "isLet": true,
+        "hasStorage": true,
+        "accessors": [
+          {
+            "kind": "Accessor",
+            "name": "Get",
+            "printedName": "Get()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Accessor",
+            "usr": "s:18HealthKitFramework0abC13VersionStringSSvg",
+            "mangledName": "$s18HealthKitFramework0abC13VersionStringSSvg",
+            "moduleName": "HealthKitFramework",
+            "implicit": true,
+            "accessorKind": "get"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "BloodPressureMonitorServiceDelegate",
+        "printedName": "BloodPressureMonitorServiceDelegate",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "bloodPressureMonitorInstantDataCallback",
+            "printedName": "bloodPressureMonitorInstantDataCallback(pressure:pulseStatus:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework35BloodPressureMonitorServiceDelegateP05bloodeF19InstantDataCallback8pressure11pulseStatusySi_SitF",
+            "mangledName": "$s18HealthKitFramework35BloodPressureMonitorServiceDelegateP05bloodeF19InstantDataCallback8pressure11pulseStatusySi_SitF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.BloodPressureMonitorServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.BloodPressureMonitorServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "bloodPressureMonitorFinalDataCallback",
+            "printedName": "bloodPressureMonitorFinalDataCallback(systolic:diastolic:pulse:irregularPulse:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework35BloodPressureMonitorServiceDelegateP05bloodeF17FinalDataCallback8systolic9diastolic5pulse14irregularPulseySi_S3itF",
+            "mangledName": "$s18HealthKitFramework35BloodPressureMonitorServiceDelegateP05bloodeF17FinalDataCallback8systolic9diastolic5pulse14irregularPulseySi_S3itF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.BloodPressureMonitorServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.BloodPressureMonitorServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:18HealthKitFramework35BloodPressureMonitorServiceDelegateP",
+        "mangledName": "$s18HealthKitFramework35BloodPressureMonitorServiceDelegateP",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "BloodPressureMonitorService",
+        "printedName": "BloodPressureMonitorService",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "BloodPressureMonitorServiceUUID",
+            "printedName": "BloodPressureMonitorServiceUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC0defG4UUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC0defG4UUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated",
+              "RawDocComment"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC0defG4UUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC0defG4UUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "BloodPressureMonitorNotifyCharacteristicUUID",
+            "printedName": "BloodPressureMonitorNotifyCharacteristicUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC0deF24NotifyCharacteristicUUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC0deF24NotifyCharacteristicUUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC0deF24NotifyCharacteristicUUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC0deF24NotifyCharacteristicUUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "BloodPressureMonitorWriteCharacteristicUUID",
+            "printedName": "BloodPressureMonitorWriteCharacteristicUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC0deF23WriteCharacteristicUUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC0deF23WriteCharacteristicUUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC0deF23WriteCharacteristicUUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC0deF23WriteCharacteristicUUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "delegate",
+            "printedName": "delegate",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "(any HealthKitFramework.BloodPressureMonitorServiceDelegate)?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "BloodPressureMonitorServiceDelegate",
+                    "printedName": "any HealthKitFramework.BloodPressureMonitorServiceDelegate",
+                    "usr": "s:18HealthKitFramework35BloodPressureMonitorServiceDelegateP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvp",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvp",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "(any HealthKitFramework.BloodPressureMonitorServiceDelegate)?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "BloodPressureMonitorServiceDelegate",
+                        "printedName": "any HealthKitFramework.BloodPressureMonitorServiceDelegate",
+                        "usr": "s:18HealthKitFramework35BloodPressureMonitorServiceDelegateP"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvg",
+                "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvg",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "(any HealthKitFramework.BloodPressureMonitorServiceDelegate)?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "BloodPressureMonitorServiceDelegate",
+                        "printedName": "any HealthKitFramework.BloodPressureMonitorServiceDelegate",
+                        "usr": "s:18HealthKitFramework35BloodPressureMonitorServiceDelegateP"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvs",
+                "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvs",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvM",
+                "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC8delegateAA0defG8Delegate_pSgvM",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "BloodPressureMonitorService",
+                "printedName": "HealthKitFramework.BloodPressureMonitorService",
+                "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceCACycfc",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceCACycfc",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "clearPairedDevices",
+            "printedName": "clearPairedDevices()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC18clearPairedDevicesyyF",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC18clearPairedDevicesyyF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "setPairedDevice",
+            "printedName": "setPairedDevice(peripheral:advertisementData:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Tuple",
+                "printedName": "(Swift.String, Swift.String, Swift.String)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ]
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Dictionary",
+                "printedName": "[Swift.String : Any]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "usr": "s:SD"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC15setPairedDevice10peripheral17advertisementDataSS_S2StSo12CBPeripheralC_SDySSypGtF",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC15setPairedDevice10peripheral17advertisementDataSS_S2StSo12CBPeripheralC_SDySSypGtF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isBloodPressureMonitor",
+            "printedName": "isBloodPressureMonitor(peripheral:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC02isdeF010peripheralSbSo12CBPeripheralC_tF",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC02isdeF010peripheralSbSo12CBPeripheralC_tF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "parseBloodPressureMonitorData",
+            "printedName": "parseBloodPressureMonitorData(peripheral:characteristic:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCharacteristic",
+                "printedName": "CoreBluetooth.CBCharacteristic",
+                "usr": "c:objc(cs)CBCharacteristic"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC05parsedeF4Data10peripheral14characteristicySo12CBPeripheralC_So16CBCharacteristicCtF",
+            "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC05parsedeF4Data10peripheral14characteristicySo12CBPeripheralC_So16CBCharacteristicCtF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:18HealthKitFramework27BloodPressureMonitorServiceC",
+        "mangledName": "$s18HealthKitFramework27BloodPressureMonitorServiceC",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "OximeterServiceDelegate",
+        "printedName": "OximeterServiceDelegate",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "oximeterBatteryCallback",
+            "printedName": "oximeterBatteryCallback(batteryPercentage:pulseData:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework23OximeterServiceDelegateP23oximeterBatteryCallback17batteryPercentage9pulseDataySi_10Foundation0M0VtF",
+            "mangledName": "$s18HealthKitFramework23OximeterServiceDelegateP23oximeterBatteryCallback17batteryPercentage9pulseDataySi_10Foundation0M0VtF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.OximeterServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.OximeterServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "oximeterMeasurementCallback",
+            "printedName": "oximeterMeasurementCallback(pulse:spo2:pi:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework23OximeterServiceDelegateP27oximeterMeasurementCallback5pulse4spo22piySi_SiSdtF",
+            "mangledName": "$s18HealthKitFramework23OximeterServiceDelegateP27oximeterMeasurementCallback5pulse4spo22piySi_SiSdtF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.OximeterServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.OximeterServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:18HealthKitFramework23OximeterServiceDelegateP",
+        "mangledName": "$s18HealthKitFramework23OximeterServiceDelegateP",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "OximeterService",
+        "printedName": "OximeterService",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "OximeterServiceUUID",
+            "printedName": "OximeterServiceUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework15OximeterServiceC0dE4UUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC0dE4UUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework15OximeterServiceC0dE4UUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework15OximeterServiceC0dE4UUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "OximeterNotifyCharacteristicUUID",
+            "printedName": "OximeterNotifyCharacteristicUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework15OximeterServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework15OximeterServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework15OximeterServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "OximeterWriteCharacteristicUUID",
+            "printedName": "OximeterWriteCharacteristicUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework15OximeterServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework15OximeterServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework15OximeterServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "delegate",
+            "printedName": "delegate",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "(any HealthKitFramework.OximeterServiceDelegate)?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "OximeterServiceDelegate",
+                    "printedName": "any HealthKitFramework.OximeterServiceDelegate",
+                    "usr": "s:18HealthKitFramework23OximeterServiceDelegateP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvp",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvp",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "(any HealthKitFramework.OximeterServiceDelegate)?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "OximeterServiceDelegate",
+                        "printedName": "any HealthKitFramework.OximeterServiceDelegate",
+                        "usr": "s:18HealthKitFramework23OximeterServiceDelegateP"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvg",
+                "mangledName": "$s18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvg",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "(any HealthKitFramework.OximeterServiceDelegate)?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "OximeterServiceDelegate",
+                        "printedName": "any HealthKitFramework.OximeterServiceDelegate",
+                        "usr": "s:18HealthKitFramework23OximeterServiceDelegateP"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvs",
+                "mangledName": "$s18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvs",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvM",
+                "mangledName": "$s18HealthKitFramework15OximeterServiceC8delegateAA0dE8Delegate_pSgvM",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "OximeterService",
+                "printedName": "HealthKitFramework.OximeterService",
+                "usr": "s:18HealthKitFramework15OximeterServiceC"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:18HealthKitFramework15OximeterServiceCACycfc",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceCACycfc",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "clearPairedDevices",
+            "printedName": "clearPairedDevices()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework15OximeterServiceC18clearPairedDevicesyyF",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC18clearPairedDevicesyyF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "setPairedDevice",
+            "printedName": "setPairedDevice(peripheral:advertisementData:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Tuple",
+                "printedName": "(Swift.String, Swift.String, Swift.String)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ]
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Dictionary",
+                "printedName": "[Swift.String : Any]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "usr": "s:SD"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework15OximeterServiceC15setPairedDevice10peripheral17advertisementDataSS_S2StSo12CBPeripheralC_SDySSypGtF",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC15setPairedDevice10peripheral17advertisementDataSS_S2StSo12CBPeripheralC_SDySSypGtF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isOximeter",
+            "printedName": "isOximeter(peripheral:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework15OximeterServiceC02isD010peripheralSbSo12CBPeripheralC_tF",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC02isD010peripheralSbSo12CBPeripheralC_tF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "parseOximeterData",
+            "printedName": "parseOximeterData(peripheral:characteristic:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCharacteristic",
+                "printedName": "CoreBluetooth.CBCharacteristic",
+                "usr": "c:objc(cs)CBCharacteristic"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework15OximeterServiceC05parseD4Data10peripheral14characteristicySo12CBPeripheralC_So16CBCharacteristicCtF",
+            "mangledName": "$s18HealthKitFramework15OximeterServiceC05parseD4Data10peripheral14characteristicySo12CBPeripheralC_So16CBCharacteristicCtF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:18HealthKitFramework15OximeterServiceC",
+        "mangledName": "$s18HealthKitFramework15OximeterServiceC",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "ThermometerServiceDelegate",
+        "printedName": "ThermometerServiceDelegate",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "thermometerTemperatureCallback",
+            "printedName": "thermometerTemperatureCallback(temperature:mode:modeString:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP30thermometerTemperatureCallback11temperature4mode0K6StringySd_SiSStF",
+            "mangledName": "$s18HealthKitFramework26ThermometerServiceDelegateP30thermometerTemperatureCallback11temperature4mode0K6StringySd_SiSStF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.ThermometerServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.ThermometerServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "thermometerErrorCallback",
+            "printedName": "thermometerErrorCallback(error:description:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP24thermometerErrorCallback5error11descriptionySi_SStF",
+            "mangledName": "$s18HealthKitFramework26ThermometerServiceDelegateP24thermometerErrorCallback5error11descriptionySi_SStF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.ThermometerServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.ThermometerServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "thermometerBatteryLevelCallback",
+            "printedName": "thermometerBatteryLevelCallback(type:description:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP31thermometerBatteryLevelCallback4type11descriptionySi_SStF",
+            "mangledName": "$s18HealthKitFramework26ThermometerServiceDelegateP31thermometerBatteryLevelCallback4type11descriptionySi_SStF",
+            "moduleName": "HealthKitFramework",
+            "genericSig": "<τ_0_0 where τ_0_0 : HealthKitFramework.ThermometerServiceDelegate>",
+            "sugared_genericSig": "<Self where Self : HealthKitFramework.ThermometerServiceDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP",
+        "mangledName": "$s18HealthKitFramework26ThermometerServiceDelegateP",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "ThermometerService",
+        "printedName": "ThermometerService",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "ThermometerServiceUUID",
+            "printedName": "ThermometerServiceUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC0dE4UUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC0dE4UUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated",
+              "RawDocComment"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC0dE4UUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC0dE4UUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "ThermometerNotifyCharacteristicUUID",
+            "printedName": "ThermometerNotifyCharacteristicUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC0D24NotifyCharacteristicUUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "ThermometerWriteCharacteristicUUID",
+            "printedName": "ThermometerWriteCharacteristicUUID",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvpZ",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "Nonisolated"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CBUUID",
+                    "printedName": "CoreBluetooth.CBUUID",
+                    "usr": "c:objc(cs)CBUUID"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvgZ",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC0D23WriteCharacteristicUUIDSo6CBUUIDCvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "queryBatteryLevelCommand",
+            "printedName": "queryBatteryLevelCommand",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC24queryBatteryLevelCommand10Foundation4DataVvpZ",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC24queryBatteryLevelCommand10Foundation4DataVvpZ",
+            "moduleName": "HealthKitFramework",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Data",
+                    "printedName": "Foundation.Data",
+                    "usr": "s:10Foundation4DataV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC24queryBatteryLevelCommand10Foundation4DataVvgZ",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC24queryBatteryLevelCommand10Foundation4DataVvgZ",
+                "moduleName": "HealthKitFramework",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "delegate",
+            "printedName": "delegate",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "(any HealthKitFramework.ThermometerServiceDelegate)?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ThermometerServiceDelegate",
+                    "printedName": "any HealthKitFramework.ThermometerServiceDelegate",
+                    "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvp",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvp",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "(any HealthKitFramework.ThermometerServiceDelegate)?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ThermometerServiceDelegate",
+                        "printedName": "any HealthKitFramework.ThermometerServiceDelegate",
+                        "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvg",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvg",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "(any HealthKitFramework.ThermometerServiceDelegate)?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ThermometerServiceDelegate",
+                        "printedName": "any HealthKitFramework.ThermometerServiceDelegate",
+                        "usr": "s:18HealthKitFramework26ThermometerServiceDelegateP"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvs",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvs",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvM",
+                "mangledName": "$s18HealthKitFramework18ThermometerServiceC8delegateAA0dE8Delegate_pSgvM",
+                "moduleName": "HealthKitFramework",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "ThermometerService",
+                "printedName": "HealthKitFramework.ThermometerService",
+                "usr": "s:18HealthKitFramework18ThermometerServiceC"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:18HealthKitFramework18ThermometerServiceCACycfc",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceCACycfc",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "clearPairedDevices",
+            "printedName": "clearPairedDevices()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC18clearPairedDevicesyyF",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC18clearPairedDevicesyyF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "setPairedDevice",
+            "printedName": "setPairedDevice(peripheral:advertisementData:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Tuple",
+                "printedName": "(Swift.String, Swift.String, Swift.String)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ]
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Dictionary",
+                "printedName": "[Swift.String : Any]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "usr": "s:SD"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC15setPairedDevice10peripheral17advertisementDataSS_S2StSo12CBPeripheralC_SDySSypGtF",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC15setPairedDevice10peripheral17advertisementDataSS_S2StSo12CBPeripheralC_SDySSypGtF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isThermometer",
+            "printedName": "isThermometer(peripheral:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC02isD010peripheralSbSo12CBPeripheralC_tF",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC02isD010peripheralSbSo12CBPeripheralC_tF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "parseThermometerData",
+            "printedName": "parseThermometerData(peripheral:characteristic:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCharacteristic",
+                "printedName": "CoreBluetooth.CBCharacteristic",
+                "usr": "c:objc(cs)CBCharacteristic"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18HealthKitFramework18ThermometerServiceC05parseD4Data10peripheral14characteristicySo12CBPeripheralC_So16CBCharacteristicCtF",
+            "mangledName": "$s18HealthKitFramework18ThermometerServiceC05parseD4Data10peripheral14characteristicySo12CBPeripheralC_So16CBCharacteristicCtF",
+            "moduleName": "HealthKitFramework",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:18HealthKitFramework18ThermometerServiceC",
+        "mangledName": "$s18HealthKitFramework18ThermometerServiceC",
+        "moduleName": "HealthKitFramework",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": [
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "FloatLiteral",
+      "offset": 828,
+      "length": 3,
+      "value": "1.0"
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 885,
+      "length": 7,
+      "value": "\"1.0.0\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "BooleanLiteral",
+      "offset": 989,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 1815,
+      "length": 38,
+      "value": "\"0000ffe0-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 1959,
+      "length": 38,
+      "value": "\"0000ffe1-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 2102,
+      "length": 38,
+      "value": "\"0000ffe2-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 6764,
+      "length": 38,
+      "value": "\"0000ffe0-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 6896,
+      "length": 38,
+      "value": "\"0000ffe1-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 7027,
+      "length": 38,
+      "value": "\"0000ffe2-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 11794,
+      "length": 38,
+      "value": "\"0000ffe0-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 11929,
+      "length": 38,
+      "value": "\"0000ffe1-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "StringLiteral",
+      "offset": 12063,
+      "length": 38,
+      "value": "\"0000ffe2-0000-1000-8000-00805f9b34fb\""
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "Array",
+      "offset": 17723,
+      "length": 21,
+      "value": "[\"A4:C1:00:00:16:B3\"]"
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "Array",
+      "offset": 17791,
+      "length": 21,
+      "value": "[\"A4:C1:38:34:FA:3A\"]"
+    },
+    {
+      "filePath": "\/Users\/kehong01\/Downloads\/test_output_app\/HealthKitFramework\/Sources\/HealthKitFramework\/HealthKitFramework.swift",
+      "kind": "Array",
+      "offset": 17869,
+      "length": 21,
+      "value": "[\"A4:C1:38:39:2E:97\"]"
+    }
+  ]
+}

@@ -1,226 +1,220 @@
+---
+name: iREdFramework
+description: Provides integration patterns, API specifications, and SwiftUI code snippets for iREdFramework. Use this skill when pairing, connecting, disconnecting, controlling, or collecting data from iRED Bluetooth smart health and sport devices (thermometer, oximeter, sphygmometer, scale, jump rope, heart rate belt). Guides state management via iREdBluetooth.shared, data models extraction, and SPM dependency setup.
+---
+
 # iREdFramework
 
-This framework simplifies Bluetooth connectivity for iRed health devices (Thermometers, Oximeters, etc.).
+## 1. 接入集成全流程 (Workflow)
 
-## Setup
-**Important**: You must import the following packages in every view that uses the framework.
+AI Agent 或开发者请按以下 5 步接入框架：
+
+### 步骤 1：添加 SPM 依赖
+- **Package URL**: `https://github.com/iredchapman/iREdFramework.git`
+
+### 步骤 2：配置蓝牙权限 (Info.plist)
+在 `Info.plist` 中添加 `Privacy - Bluetooth Always Usage Description` (`NSBluetoothAlwaysUsageDescription`) 权限说明即可。
+
+### 步骤 3：导入模块
+在需要使用蓝牙功能的视图或业务文件顶部导入：
 ```swift
 import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
-
-@StateObject var ble = iREdBluetooth.shared
+import Combine
+import iREdFramework
 ```
 
-## 1. Device Usage Examples
-
-Copy these patterns to build your views.
-
-### Thermometer
-
+### 步骤 4：注入蓝牙管理器单例
+在 SwiftUI View 中注入全局单例管理器：
 ```swift
-import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
+@StateObject private var ble = iREdBluetooth.shared
+```
 
-@StateObject var ble = iREdBluetooth.shared
+### 步骤 5：设备控制与数据读取
+- **配对**：`ble.startPairing(to: .<deviceType>)`（自动保存 UUID 并停止扫描）
+- **停止扫描**：`ble.stopPairing()`
+- **连接**：`ble.connect(from: .<deviceType>)`（重连已配对设备）
+- **断开**：`ble.disconnect(from: .<deviceType>)` 或 `ble.disconnect(from: .all_ired_devices)`
+- **信号过滤**：`ble.setRSSI(limit: -60)`
+- **读取数据与状态**：从 `ble.iredDeviceData.<deviceType>Data.state` 读取状态，从 `.data` 读取指标
 
-Text(ble.iredDeviceData.thermometerData.state.isPairing ? "Pairing..." : 
-     ble.iredDeviceData.thermometerData.state.isPaired ? "Paired" : "Unpaired")
-    .foregroundColor(ble.iredDeviceData.thermometerData.state.isPairing ? .orange : 
-                     ble.iredDeviceData.thermometerData.state.isPaired ? .blue : .gray)
+---
 
-Text(ble.iredDeviceData.thermometerData.state.isConnected ? "Connected" : "Disconnected")
-    .foregroundColor(ble.iredDeviceData.thermometerData.state.isConnected ? .green : .red)
+## 2. 统一设备状态机 (`DeviceStatusModel`)
 
+所有外设统一通过 `ble.iredDeviceData.<deviceType>Data.state` 读取运行状态：
+
+| 状态属性 | 类型 | 含义 |
+| :--- | :--- | :--- |
+| `isPairing` | `Bool` | 是否正在搜索配对中 |
+| `isPaired` | `Bool` | 是否已完成配对（本地有持久化记录） |
+| `isConnecting` | `Bool` | 是否正在连接中 |
+| `isConnected` | `Bool` | 当前是否已连接 |
+| `isConnectionFailure` | `Bool` | 最近一次连接是否失败 |
+| `isDisconnected` | `Bool` | 是否处于断开状态 |
+| `isMeasuring` | `Bool` | 是否处于测量中（如血压计加压、跳绳中） |
+| `isMeasurementCompleted` | `Bool` | 测量是否已完成 |
+| `isPauseMeasurement` | `Bool` | 测量是否处于暂停状态 |
+| `isMeasurementError` | `MeasurementError?` | 测量异常信息（`errorCode: Int`, `errorDescription: String`） |
+
+---
+
+## 3. 六大设备详细说明与数据模型
+
+### 3.1 🌡️ 体温计 (`.thermometer`)
+
+- **访问路径**：`ble.iredDeviceData.thermometerData`
+- **控制指令**：`ble.startPairing(to: .thermometer)`、`ble.connect(from: .thermometer)`、`ble.disconnect(from: .thermometer)`
+- **数据字段 (`HealthKitThermometerModel`)**：
+  - `temperature: Double?`：测得体温数值 (°C)
+  - `modeCode: Int?` / `modeDescription: String?`：测量模式代号与描述，`modeDescription` 有 4 种可能返回值：`"Adult Forehead"`, `"Child Forehead"`, `"Ear Canal"`, `"Object"`
+  - `battery: String?`：电池电量（百分比字符串，例如 "85%"）
+  - `peripheralName: String?` / `macAddress: String?`：设备名称与 MAC 地址
+  - `lastUpdatedTime: Date`：最后更新时间
+- **测量异常**：读取 `state.isMeasurementError` 获取错误代码与描述。
+- **SwiftUI 代码示例**：
+```swift
+Text("Status: \(ble.iredDeviceData.thermometerData.state.isConnected ? "Connected" : "Disconnected")")
+Text("Temperature: \(String(format: "%.1f", ble.iredDeviceData.thermometerData.data.temperature ?? 0)) °C")
+Text("Mode: \(ble.iredDeviceData.thermometerData.data.modeDescription ?? "-")")
 Button("Pair") { ble.startPairing(to: .thermometer) }
-Button("Stop") { ble.stopPairing() }
 Button("Connect") { ble.connect(from: .thermometer) }
 Button("Disconnect") { ble.disconnect(from: .thermometer) }
-
-if let temp = ble.iredDeviceData.thermometerData.data.temperature {
-Text("\(String(format: "%.1f", temp))°C")
-    .font(.system(size: 50))
-} else {
-Text("--.-°C")
-    .font(.system(size: 50))
-}
-
-Text("Mode: \(ble.iredDeviceData.thermometerData.data.modeDescription ?? "-")")
-Text("Mode Code: \(ble.iredDeviceData.thermometerData.data.modeCode ?? -1)")
-Text("Battery: \(ble.iredDeviceData.thermometerData.data.battery ?? "-")")
-Text("Name: \(ble.iredDeviceData.thermometerData.data.peripheralName ?? "-")")
-Text("MAC: \(ble.iredDeviceData.thermometerData.data.macAddress ?? "-")")
-Text("Last Updated: \(ble.iredDeviceData.thermometerData.data.lastUpdatedTime.description)")
 ```
 
-### Oximeter
+---
 
+### 3.2 🫁 血氧仪 (`.oximeter`)
+
+- **访问路径**：`ble.iredDeviceData.oximeterData`
+- **控制指令**：`ble.startPairing(to: .oximeter)`、`ble.connect(from: .oximeter)`、`ble.disconnect(from: .oximeter)`
+- **数据字段 (`HealthKitOximeterModel`)**：
+  - `spo2: Int?`：当前实时血氧饱和度 (%)
+  - `pulse: Int?`：当前实时脉搏心率 (BPM)
+  - `pi: Double?`：灌注指数 (Perfusion Index)
+  - `battery: Int?`：电量百分比 (0~100)
+- **分析与辅助方法**：
+  - `data.averageSpo2() -> Int`：平均血氧
+  - `data.averageBPM() -> Int`：平均心率
+  - `data.averagePI() -> Double`：平均灌注指数
+  - `ble.oximeterMeasurementResultsDetails(data: data) -> String`：根据均值和医学区间生成健康分析文本报告
+- **SwiftUI 代码示例**：
 ```swift
-import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
-
-@StateObject var ble = iREdBluetooth.shared
-
-Text(ble.iredDeviceData.oximeterData.state.isPairing ? "Pairing..." : 
-       ble.iredDeviceData.oximeterData.state.isPaired ? "Paired" : "Unpaired")
-Text(ble.iredDeviceData.oximeterData.state.isConnected ? "Connected" : "Disconnected")
-
+Text("SpO₂: \(ble.iredDeviceData.oximeterData.data.spo2 ?? 0)%")
+Text("Pulse: \(ble.iredDeviceData.oximeterData.data.pulse ?? 0) BPM")
+Text("PI: \(String(format: "%.1f", ble.iredDeviceData.oximeterData.data.pi ?? 0.0))")
+Text("Average SpO₂: \(ble.iredDeviceData.oximeterData.data.averageSpo2())%")
 Button("Pair") { ble.startPairing(to: .oximeter) }
-Button("Stop") { ble.stopPairing() }
 Button("Connect") { ble.connect(from: .oximeter) }
 Button("Disconnect") { ble.disconnect(from: .oximeter) }
-
-Text("SpO2")
-Text("\(ble.iredDeviceData.oximeterData.data.spo2 ?? 0)%").font(.title)
-
-Text("Pulse")
-Text("\(ble.iredDeviceData.oximeterData.data.pulse ?? 0) BPM").font(.title)
-
-Text("PI")
-Text(String(format: "%.2f", ble.iredDeviceData.oximeterData.data.pi ?? 0.0))
-
-Text("Avg SpO2: \(ble.iredDeviceData.oximeterData.data.averageSpo2())")
-Text("Avg BPM: \(ble.iredDeviceData.oximeterData.data.averageBPM())")
-Text("Avg PI: \(String(format: "%.2f", ble.iredDeviceData.oximeterData.data.averagePI()))")
-
-Text("Battery: \(ble.iredDeviceData.oximeterData.data.battery ?? 0)%")
-Text("Name: \(ble.iredDeviceData.oximeterData.data.peripheralName ?? "-")")
-Text("MAC: \(ble.iredDeviceData.oximeterData.data.macAddress ?? "-")")
-Text("Last Updated: \(ble.iredDeviceData.oximeterData.data.lastUpdatedTime.description)")
-
-
 ```
 
-### Sphygmometer (Blood Pressure)
+---
 
+### 3.3 🩺 血压计 (`.sphygmometer`)
+
+- **访问路径**：`ble.iredDeviceData.sphygmometerData`
+- **控制指令**：`ble.startPairing(to: .sphygmometer)`、`ble.connect(from: .sphygmometer)`、`ble.disconnect(from: .sphygmometer)`
+- **数据字段 (`HealthKitSphygmometerModel`)**：
+  - `pressure: Int?`：**实时加压充气袖带压力** (mmHg)（当 `state.isMeasuring == true` 时持续刷新）
+  - `pulseStatus: Int?`：心跳检测状态码
+  - `systolic: Int?`：**收缩压 (高压)** (mmHg)（测量完成时输出）
+  - `diastolic: Int?`：**舒张压 (低压)** (mmHg)（测量完成时输出）
+  - `pulse: Int?`：**最终脉搏** (BPM)
+  - `irregularPulse: Int?`：**心律不齐标识**（`1` 表示异常，`0` 表示正常）
+- **SwiftUI 代码示例**：
 ```swift
-import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
-
-@StateObject var ble = iREdBluetooth.shared
-
-Text(ble.iredDeviceData.sphygmometerData.state.isPairing ? "Pairing..." : 
-         ble.iredDeviceData.sphygmometerData.state.isPaired ? "Paired" : "Unpaired")
-
-Text(ble.iredDeviceData.sphygmometerData.state.isConnected ? "Connected" : "Disconnected")
-    .foregroundColor(ble.iredDeviceData.sphygmometerData.state.isConnected ? .green : .red)
-
-Button("Pair") { ble.startPairing(to: .sphygmometer) }
-Button("Stop") { ble.stopPairing() }
-Button("Connect") { ble.connect(from: .sphygmometer) }
-Button("Disconnect") { ble.disconnect(from: .sphygmometer) }
-
 if ble.iredDeviceData.sphygmometerData.state.isMeasuring {
     Text("Measuring: \(ble.iredDeviceData.sphygmometerData.data.pressure ?? 0) mmHg")
-        .font(.title)
-        .foregroundColor(.orange)
-    Text("Pulse Status: \(ble.iredDeviceData.sphygmometerData.data.pulseStatus ?? 0)")
 } else {
-    Text("\(ble.iredDeviceData.sphygmometerData.data.systolic ?? 0)")
-    Text("\(ble.iredDeviceData.sphygmometerData.data.diastolic ?? 0)")
-    Text("\(ble.iredDeviceData.sphygmometerData.data.pulse ?? 0)")
+    Text("Systolic: \(ble.iredDeviceData.sphygmometerData.data.systolic ?? 0) mmHg")
+    Text("Diastolic: \(ble.iredDeviceData.sphygmometerData.data.diastolic ?? 0) mmHg")
+    Text("Pulse: \(ble.iredDeviceData.sphygmometerData.data.pulse ?? 0) BPM")
+    Text("Irregular Pulse: \(ble.iredDeviceData.sphygmometerData.data.irregularPulse == 1 ? "Yes" : "No")")
 }
-
-Text("Irregular Pulse: \(ble.iredDeviceData.sphygmometerData.data.irregularPulse == 1 ? "Yes" : "No")")
-Text("Name: \(ble.iredDeviceData.sphygmometerData.data.peripheralName ?? "-")")
-Text("MAC: \(ble.iredDeviceData.sphygmometerData.data.macAddress ?? "-")")
-Text("Last Updated: \(ble.iredDeviceData.sphygmometerData.data.lastUpdatedTime.description)")
-
+Button("Pair") { ble.startPairing(to: .sphygmometer) }
+Button("Connect") { ble.connect(from: .sphygmometer) }
 ```
 
-### ⚖️ Scale
+---
 
+### 3.4 ⚖️ 体重秤 (`.scale`)
+
+- **访问路径**：`ble.iredDeviceData.scaleData`
+- **控制指令**：`ble.startPairing(to: .scale)`、`ble.connect(from: .scale)`、`ble.disconnect(from: .scale)`
+- **数据字段 (`HealthKitScaleModel`)**：
+  - `weight: Double?`：体重数值 (kg)
+  - `isFinalResult: Bool?`：数值是否已稳定锁定（`true` 为锁定最终值，`false` 为测量晃动中）
+- **身体指标计算扩展**：
+  - `data.toBMI(height: Int, weight: Double) -> Double`：BMI 计算
+  - `data.toBodyFat(height: Int, age: Int, gender: String) -> Double`：估算体脂率 (%)
+  - `data.healthStatus(height: Int) -> String`：健康等级评估 (`"Underweight"`, `"Normal"`, `"Overweight"`, `"Obese"`)
+- **SwiftUI 代码示例**：
 ```swift
-import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
-
-@StateObject var ble = iREdBluetooth.shared
-
-Text(ble.iredDeviceData.scaleData.state.isPairing ? "Pairing..." : 
-     ble.iredDeviceData.scaleData.state.isPaired ? "Paired" : "Unpaired")
-
-Text(ble.iredDeviceData.scaleData.state.isConnected ? "Connected" : "Disconnected")
-
+let scale = ble.iredDeviceData.scaleData
+Text("Weight: \(String(format: "%.2f", scale.data.weight ?? 0.0)) kg")
+Text("Status: \(scale.data.isFinalResult == true ? "Locked" : "Measuring...")")
+if let w = scale.data.weight, scale.data.isFinalResult == true {
+    Text("BMI: \(String(format: "%.1f", scale.data.toBMI(height: 175, weight: w)))")
+    Text("Body Fat: \(String(format: "%.1f", scale.data.toBodyFat(height: 175, age: 25, gender: "male")))%")
+}
 Button("Pair") { ble.startPairing(to: .scale) }
-Button("Stop") { ble.stopPairing() }
 Button("Connect") { ble.connect(from: .scale) }
-Button("Disconnect") { ble.disconnect(from: .scale) }
-
-Text("\(String(format: "%.2f", ble.iredDeviceData.scaleData.data.weight ?? 0.0)) kg")
-    .font(.system(size: 50))
-
-if ble.iredDeviceData.scaleData.data.isFinalResult == true {
-    Text("Stable").foregroundColor(.green)
-} else {
-    Text("Measuring...").foregroundColor(.orange)
-}
-
-Text("Name: \(ble.iredDeviceData.scaleData.data.peripheralName ?? "-")")
-Text("MAC: \(ble.iredDeviceData.scaleData.data.macAddress ?? "-")")
-Text("Last Updated: \(ble.iredDeviceData.scaleData.data.lastUpdatedTime.description)")
 ```
 
-### 🪢 Jump Rope
+---
+
+### 3.5 🪢 智能跳绳 (`.jumpRope`)
+
+- **访问路径**：`ble.iredDeviceData.jumpRopeData`
+- **工作模式枚举 (`SetJumpRopeMode`)**：
+  - `.free`：自由跳
+  - `.time(second: Int)`：倒计时跳（秒）
+  - `.count(count: Int)`：计数跳（目标次数）
+- **控制指令**：
+  - `ble.startJumpRopeRecording(mode, completion: { result in ... })`：下发模式，清空历史并启动每秒定时间隔快照记录
+  - `ble.stopJumpRopeRecording()`：停止工作模式与定时器（**若心率带也处于测量中会自动联动停止**）
+  - `ble.setJumpRopeMode(mode)` / `ble.stopJumpRopeMode()`：单纯下发模式不启动秒级采样
+- **数据字段 (`JumpRopeModel`)**：
+  - `mode: Int?`：模式：`0` = 自由跳, `1` = 计时跳, `2` = 计数跳
+  - `modeString() -> String`：返回模式对应的字符串（`"Free"` / `"Time"` / `"Count"`，默认 `"Free"`）
+  - `status: Int?`：当前状态（例如是否在跳跃中，可自定义）
+  - `setting: Int?`：用户设置的参数（如目标时间/计数等）
+  - `count: Int?`：当前已跳绳次数
+  - `time: Int?`：当前已跳绳时间（单位：秒）
+  - `batteryLevel: Int?`：电池电量等级（0 ~ 4）：
+    - `4`: 电量 > 80%
+    - `3`: 电量 > 50%
+    - `2`: 电量 > 25%
+    - `1`: 电量 > 10%
+    - `0`: 电量 <= 10%
+  - `batteryLevelDescription: String`：电量等级文字描述（如 `"电量充足（>80%）"`）
+  - `countArray: [JumpRopeArrayModel]`：**每秒快照数组**（包含 `date: Date`, `count: Int`），用于绘制跳绳速率曲线
+  - `recordTime: Int`：有效记录总秒数
+- **SwiftUI 代码示例**：
 ```swift
-import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
-
-@StateObject var ble = iREdBluetooth.shared
-
-Text(ble.iredDeviceData.jumpRopeData.state.isPairing ? "Pairing..." : 
-     ble.iredDeviceData.jumpRopeData.state.isPaired ? "Paired" : "Unpaired")
-
-Text(ble.iredDeviceData.jumpRopeData.state.isConnected ? "Connected" : "Disconnected")
-
-Button("Pair") { ble.startPairing(to: .jumpRope) }
-Button("Stop") { ble.stopPairing() }
-Button("Connect") { ble.connect(from: .jumpRope) }
-Button("Disconnect") { ble.disconnect(from: .jumpRope) }
-
-Text("Count: \(ble.iredDeviceData.jumpRopeData.data.count ?? 0)")
-Text("Time: \(ble.iredDeviceData.jumpRopeData.data.time ?? 0)")
-Text("Setting: \(ble.iredDeviceData.jumpRopeData.data.setting ?? 0)")
-Text("Status: \(ble.iredDeviceData.jumpRopeData.data.status.flatMap { [0: "Not Jumping", 1: "Jumping", 2: "Paused", 3: "Ended"][$0] } ?? "N/A")")
-
-Text("Mode: \(ble.iredDeviceData.jumpRopeData.data.mode.flatMap { [0: "Free", 1: "Time", 2: "Count"][$0] } ?? "N/A")")
-Text("Battery: \(ble.iredDeviceData.jumpRopeData.data.batteryLevel.map { ["≤10%", ">10%", ">25%", ">50%", ">80%"][$0 <= 4 && $0 >= 0 ? $0 : 0] } ?? "N/A")")
-
-Button("Set Free Mode") { ble.setJumpRopeMode(.free) }
-Button("Set Count Mode(30)") { ble.setJumpRopeMode(.count(count: 30)) }
-Button("Set Time Mode(30)") { ble.setJumpRopeMode(.time(second: 30)) }
-
-Text("Name: \(ble.iredDeviceData.jumpRopeData.data.peripheralName ?? "-")")
-Text("MAC: \(ble.iredDeviceData.jumpRopeData.data.macAddress ?? "-")")
-Text("Last Updated: \(ble.iredDeviceData.jumpRopeData.data.lastUpdatedTime.description)")
+let rope = ble.iredDeviceData.jumpRopeData.data
+Text("Mode: \(rope.modeString()) | Count: \(rope.count ?? 0) | Time: \(rope.time ?? 0)s")
+Text("Battery: \(rope.batteryLevelDescription)")
+Button("Start Free Jump") { ble.startJumpRopeRecording(.free) { _ in } }
+Button("Start 60s Jump") { ble.startJumpRopeRecording(.time(second: 60)) { _ in } }
+Button("Start 100 Count Jump") { ble.startJumpRopeRecording(.count(count: 100)) { _ in } }
+Button("Stop Jump") { ble.stopJumpRopeRecording() }
 ```
 
-### 💓 Heart Rate Belt
+---
+
+### 3.6 💓 心率带 (`.heartRateBelt`)
+
+- **访问路径**：`ble.iredDeviceData.heartRateData`
+- **控制指令**：`ble.startPairing(to: .heartRateBelt)`、`ble.connect(from: .heartRateBelt)`、`ble.disconnect(from: .heartRateBelt)`
+- **数据字段 (`HeartRateBeltModel`)**：
+  - `heartrate: Int?`：当前实时心率值 (BPM)
+  - `batteryPercentage: Int?`：电量百分比 (0~100)
+- **SwiftUI 代码示例**：
 ```swift
-import SwiftUI
-import Combine        // REQUIRED for ObservableObject
-import iREdFramework  // The core framework
-
-@StateObject var ble = iREdBluetooth.shared
-
-Text(ble.iredDeviceData.heartRateData.state.isPairing ? "Pairing..." : 
-     ble.iredDeviceData.heartRateData.state.isPaired ? "Paired" : "Unpaired")
-
-Text(ble.iredDeviceData.heartRateData.state.isConnected ? "Connected" : "Disconnected")
-
+let hr = ble.iredDeviceData.heartRateData.data
+Text("Heart Rate: \(hr.heartrate ?? 0) BPM | Battery: \(hr.batteryPercentage ?? 0)%")
 Button("Pair") { ble.startPairing(to: .heartRateBelt) }
-Button("Stop") { ble.stopPairing() }
 Button("Connect") { ble.connect(from: .heartRateBelt) }
 Button("Disconnect") { ble.disconnect(from: .heartRateBelt) }
-
-Text("\(ble.iredDeviceData.heartRateData.data.heartrate ?? 0) BPM")
-Text("Battery: \(ble.iredDeviceData.heartRateData.data.batteryPercentage ?? 0)%")
-
-Text("Name: \(ble.iredDeviceData.heartRateData.data.peripheralName ?? "-")")
-Text("MAC: \(ble.iredDeviceData.heartRateData.data.macAddress ?? "-")")
-Text("Last Updated: \(ble.iredDeviceData.heartRateData.data.lastUpdatedTime.description)")
 ```

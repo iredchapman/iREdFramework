@@ -5,7 +5,10 @@ import PackageDescription
 
 let package = Package(
     name: "iREdFramework",
-    platforms: [.iOS(.v16), .macOS(.v10_13)],
+    platforms: [
+        .iOS(.v17),
+        .macOS(.v15)
+    ],
     products: [
         .library(
             name: "iREdFramework",
@@ -25,11 +28,11 @@ let package = Package(
         ),
         .binaryTarget(
             name: "HealthKitFramework",
-            path: "./Frameworks/HealthKitFramework.xcframework"
+            path: "Frameworks/HealthKitFramework.xcframework"
         ),
         .binaryTarget(
             name: "SportKitFramework",  // 添加 SportKitFramework 的二进制目标
-            path: "./Frameworks/SportKitFramework.xcframework"  // 这里是 SportKitFramework 的路径
+            path: "Frameworks/SportKitFramework.xcframework"  // 这里是 SportKitFramework 的路径
         )
     ]
 )
