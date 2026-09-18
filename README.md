@@ -14,7 +14,7 @@ Follow these 5 steps to integrate the framework:
 
 ### Step 2: Configure Bluetooth Permissions (Info.plist)
 
-Add `Privacy - Bluetooth Always Usage Description` (`NSBluetoothAlwaysUsageDescription`) to `Info.plist`.
+Add `Privacy - Bluetooth Always Usage Description` (`NSBluetoothAlwaysUsageDescription`) to `Info.plist` (configure via the target's **Info** tab; do not add a physical `Info.plist` to **Copy Bundle Resources** to prevent `Multiple commands produce` build conflicts).
 
 ### Step 3: Import Modules
 Import the required modules at the top of your SwiftUI views or service files:
