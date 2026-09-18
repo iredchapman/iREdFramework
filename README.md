@@ -3,7 +3,7 @@ name: iREdFramework
 description: Provides integration patterns, API specifications, and SwiftUI code snippets for iREdFramework. Use this skill when pairing, connecting, disconnecting, controlling, or collecting data from iRED Bluetooth health and sports devices: thermometer/體溫計, oximeter/血氧儀 (SpO2, pulse), sphygmometer/血壓計 (pressure, systolic, diastolic), scale/體重秤/體重磅 (weight, BMI), jump rope/跳繩 (count, time, modes), and heart rate belt/心率帶 (BPM). Guides reactive state management via iREdBluetooth.shared, data models, and SPM setup.
 ---
 
-# iREdFramework
+## iREdFramework
 
 ## 1. Integration Workflow
 
