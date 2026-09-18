@@ -35,7 +35,6 @@ Inject the global singleton manager into your SwiftUI View:
 - **Stop Scanning**: `ble.stopPairing()`
 - **Connect**: `ble.connect(from: .<deviceType>)` (reconnect to an already paired device)
 - **Disconnect**: `ble.disconnect(from: .<deviceType>)` or `ble.disconnect(from: .all_ired_devices)`
-- **Signal Filter**: `ble.setRSSI(limit: -60)`
 - **Read State & Data**: Read state from `ble.iredDeviceData.<deviceType>Data.state` and telemetry from `.data`
 
 ---
@@ -165,10 +164,7 @@ Button("Connect") { ble.connect(from: .scale) }
   - `.free`: Free jump
   - `.time(second: Int)`: Countdown jump (seconds)
   - `.count(count: Int)`: Target count jump (repetitions)
-- **Control APIs**:
-  - `ble.startJumpRopeRecording(mode, completion: { result in ... })`: Sends mode command, clears history, and starts 1-second periodic snapshot recording
-  - `ble.stopJumpRopeRecording()`: Stops mode and recording timer (**also stops heart rate recording if active**)
-  - `ble.setJumpRopeMode(mode)` / `ble.stopJumpRopeMode()`: Sends mode command without starting periodic snapshots
+- **Control APIs**: `ble.startPairing(to: .jumpRope)`, `ble.connect(from: .jumpRope)`, `ble.disconnect(from: .jumpRope)`, `ble.setJumpRopeMode(mode)`, `ble.stopJumpRopeMode()`
 - **Data Fields (`JumpRopeModel`)**:
   - `mode: Int?`: Mode code (`0` = Free, `1` = Time, `2` = Count)
   - `modeString() -> String`: Returns mode string (`"Free"`, `"Time"`, `"Count"`, default `"Free"`)
@@ -183,17 +179,17 @@ Button("Connect") { ble.connect(from: .scale) }
     - `1`: Battery > 10%
     - `0`: Battery <= 10%
   - `batteryLevelDescription: String`: Battery level textual description
-  - `countArray: [JumpRopeArrayModel]`: **Per-second snapshot array** (containing `date: Date`, `count: Int`), used for jump cadence/velocity graphs
-  - `recordTime: Int`: Total valid recorded seconds
 - **SwiftUI Example**:
 ```swift
 let rope = ble.iredDeviceData.jumpRopeData.data
 Text("Mode: \(rope.modeString()) | Count: \(rope.count ?? 0) | Time: \(rope.time ?? 0)s")
 Text("Battery: \(rope.batteryLevelDescription)")
-Button("Start Free Jump") { ble.startJumpRopeRecording(.free) { _ in } }
-Button("Start 60s Jump") { ble.startJumpRopeRecording(.time(second: 60)) { _ in } }
-Button("Start 100 Count Jump") { ble.startJumpRopeRecording(.count(count: 100)) { _ in } }
-Button("Stop Jump") { ble.stopJumpRopeRecording() }
+Button("Pair") { ble.startPairing(to: .jumpRope) }
+Button("Connect") { ble.connect(from: .jumpRope) }
+Button("Start Free Jump") { ble.setJumpRopeMode(.free) }
+Button("Start 60s Jump") { ble.setJumpRopeMode(.time(second: 60)) }
+Button("Start 100 Count Jump") { ble.setJumpRopeMode(.count(count: 100)) }
+Button("Stop Jump") { ble.stopJumpRopeMode() }
 ```
 
 ---
